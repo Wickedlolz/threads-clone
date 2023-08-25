@@ -1,0 +1,177 @@
+/* eslint-disable quotes */
+const router = require('express').Router();
+
+const authService = require('../services/auth');
+const { mapErrors } = require('../utils/mapErrors');
+const { isAuth, isGuest } = require('../middlewares/guards');
+const { body, validationResult } = require('express-validator');
+
+router.post(
+    '/register',
+    isGuest(),
+    body('email').trim(),
+    body('password').trim(),
+    body('email')
+        .notEmpty()
+        .withMessage('Email is required!')
+        .bail()
+        .isEmail()
+        .withMessage('Invalid email adress!'),
+    body('password')
+        .notEmpty()
+        .withMessage('Password is required!')
+        .bail()
+        .isLength({ min: 3 })
+        .withMessage('Password must be at least 3 characters long!'),
+
+    async (req, res) => {
+        const { errors } = validationResult(req);
+        const { email, password, firstName, lastName, photoURL } = req.body;
+
+        try {
+            if (errors.length > 0) {
+                throw errors;
+            }
+
+            const user = await authService.register(
+                email,
+                password,
+                firstName,
+                lastName,
+                photoURL
+            );
+            const token = await authService.createToken(user);
+
+            const result = {
+                email: user.email,
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                createdAt: user.createdAt,
+                photoURL: user.photoURL,
+            };
+
+            res.cookie(process.env.COOKIE_NAME, token, {
+                httpOnly: true,
+            });
+            res.status(201).json(result);
+        } catch (error) {
+            const errors = mapErrors(error);
+            res.status(400).json({ message: errors });
+        }
+    }
+);
+
+router.post(
+    '/login',
+    isGuest(),
+    body('email').trim(),
+    body('password').trim(),
+    body('email')
+        .notEmpty()
+        .withMessage('Email is required!')
+        .bail()
+        .isEmail()
+        .withMessage('Invalid email adress!'),
+    body('password')
+        .notEmpty()
+        .withMessage('Password is required!')
+        .bail()
+        .isLength({ min: 3 })
+        .withMessage('Password must be at least 3 characters long!'),
+    async (req, res) => {
+        const { errors } = validationResult(req);
+        const { email, password } = req.body;
+
+        try {
+            if (errors.lenght > 0) {
+                throw errors;
+            }
+
+            const user = await authService.login(email, password);
+            const token = await authService.createToken(user);
+
+            const result = {
+                email: user.email,
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                createdAt: user.createdAt,
+                photoURL: user.photoURL,
+            };
+
+            res.cookie(process.env.COOKIE_NAME, token, {
+                httpOnly: true,
+            });
+            res.status(200).json(result);
+        } catch (error) {
+            const errors = mapErrors(error);
+            res.status(400).json({ message: errors });
+        }
+    }
+);
+
+router.post(
+    '/reset-password',
+    isAuth(),
+    body('newPassword').trim(),
+    body('newPassword')
+        .notEmpty()
+        .withMessage('New Password is required!')
+        .bail()
+        .isLength({ min: 3 })
+        .withMessage('Password must be at least 3 characters long!'),
+    async (req, res) => {
+        const { errors } = validationResult(req);
+        const { newPassword } = req.body;
+        const userId = req.user.id;
+
+        try {
+            if (errors.length > 0) {
+                throw errors;
+            }
+
+            const userWithResetedPassword = await authService.resetPassword(
+                userId,
+                newPassword
+            );
+
+            const result = {
+                email: userWithResetedPassword.email,
+                _id: userWithResetedPassword._id,
+                firstName: userWithResetedPassword.firstName,
+                lastName: userWithResetedPassword.lastName,
+                createdAt: userWithResetedPassword.createdAt,
+                photoURL: userWithResetedPassword.photoURL,
+            };
+
+            res.status(201).json(result);
+        } catch (error) {
+            const errors = mapErrors(error);
+            res.status(400).json({ message: errors });
+        }
+    }
+);
+
+router.post('/logout', isAuth(), async (req, res) => {
+    res.clearCookie(process.env.COOKIE_NAME, {
+        httpOnly: true,
+        maxAge: new Date(Date.now()),
+    })
+        .status(204)
+        .json({ message: 'Successfully logged out.' });
+});
+
+router.get('/profile', isAuth(), async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const user = await authService.getProfile(userId);
+        res.json(user);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
+module.exports = router;
