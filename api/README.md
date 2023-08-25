@@ -1,3 +1,3 @@
-# ForumiX
+# Threads Clone REST API
 
-ForumiX REST API
+Threads Clone REST API
