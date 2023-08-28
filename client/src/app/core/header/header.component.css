@@ -1,0 +1,17 @@
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0px 50px;
+}
+
+nav img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}
+
+nav ul {
+  display: flex;
+  gap: 20px;
+}
