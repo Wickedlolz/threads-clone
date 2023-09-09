@@ -24,7 +24,45 @@ exports.getAll = async function () {
 
 exports.create = async function (title, description, owner) {
     const thread = new Thread({ title, description, owner });
-    thread.save();
+    await thread.save();
+
+    return thread;
+};
+
+exports.getById = async function (threadId) {
+    const thread = await Thread.findById(threadId);
+    return thread;
+};
+
+exports.updateById = async function (threadId, title, description) {
+    const thread = await Thread.findById(threadId);
+    thread.title = title;
+    thread.description = description;
+
+    await thread.save();
+
+    return thread;
+};
+
+exports.like = async function (threadId, userId) {
+    const thread = await Thread.findById(threadId);
+    const isLiked = thread.likes.find((user) => user === userId);
+
+    if (isLiked) {
+        throw new Error('You already like this thread!');
+    }
+
+    thread.likes.push(userId);
+    await thread.save();
+
+    return thread;
+};
+
+exports.dislike = async function (threadId, userId) {
+    const thread = await Thread.findById(threadId);
+
+    thread.likes.pull(userId);
+    await thread.save();
 
     return thread;
 };

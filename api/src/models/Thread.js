@@ -20,14 +20,18 @@ const threadSchema = new Schema(
             ref: 'User',
             required: true,
         },
-        likes: {
-            type: Number,
-            default: 0,
-        },
-        // comments: {
-        //     type: ObjectId,
-        //     ref: "Comment"
-        // }
+        likes: [
+            {
+                type: ObjectId,
+                ref: 'User',
+            },
+        ],
+        comments: [
+            {
+                type: ObjectId,
+                ref: 'Comment',
+            },
+        ],
     },
     { timestamps: true }
 );

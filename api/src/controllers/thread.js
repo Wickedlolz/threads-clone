@@ -56,6 +56,68 @@ router.post(
     }
 );
 
+router.get('/:threadId', async (req, res) => {
+    const { threadId } = req.params;
+
+    try {
+        const thread = await threadService.getById(threadId);
+        res.json(thread);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
+router.put(
+    '/:threadId',
+    isAuth(),
+    body('title').trim(),
+    body('description').trim(),
+    body('title')
+        .notEmpty()
+        .withMessage('Post Title is required!')
+        .bail()
+        .isLength({ min: 5 })
+        .withMessage('Post Title must be at least 5 characters long'),
+    body('description')
+        .notEmpty()
+        .withMessage('Description is required!')
+        .bail()
+        .isLength({ min: 10 })
+        .withMessage('Description must be at least 10 characters long'),
+    async (req, res) => {
+        const { errors } = validationResult(req);
+        const { threadId } = req.params;
+        const { title, description } = req.body;
+
+        try {
+            if (errors.length > 0) {
+                throw errors;
+            }
+
+            const updatedThread = await threadService.updateById(
+                threadId,
+                title,
+                description
+            );
+
+            res.status(201).json(updatedThread);
+        } catch (error) {
+            const errors = mapErrors(error);
+            res.status(400).json({ message: errors });
+        }
+    }
+);
+
+router.post('/like', isAuth(), async (req, res) => {
+    const { threadId } = req.body;
+});
+
+router.post('/dislike', isAuth(), async (req, res) => {
+    const { threadId } = req.body;
+    const userId = req.user.id;
+});
+
 router.post(
     '/comment',
     isAuth(),
