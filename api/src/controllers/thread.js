@@ -56,4 +56,40 @@ router.post(
     }
 );
 
+router.post(
+    '/comment',
+    isAuth(),
+    body('threadId').trim(),
+    body('comment').trim(),
+    body('threadId').notEmpty().withMessage('Thread ID is required!'),
+    body('comment')
+        .notEmpty()
+        .withMessage('Comment is required!')
+        .bail()
+        .isLength({ min: 3 })
+        .withMessage('Comment must be at least 3 characters long!'),
+    async (req, res) => {
+        const { errors } = validationResult(req);
+        const { threadId, comment } = req.body;
+        const userId = req.user.id;
+
+        try {
+            if (errors.length > 0) {
+                throw errors;
+            }
+
+            const thread = await threadService.comment(
+                threadId,
+                comment,
+                userId
+            );
+
+            res.status(201).json(thread);
+        } catch (error) {
+            const errors = mapErrors(error);
+            res.status(400).json({ message: errors });
+        }
+    }
+);
+
 module.exports = router;
