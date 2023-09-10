@@ -111,11 +111,28 @@ router.put(
 
 router.post('/like', isAuth(), async (req, res) => {
     const { threadId } = req.body;
+    const userId = req.user.id;
+
+    try {
+        const thread = await threadService.like(threadId, userId);
+        res.status(201).json(thread);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
 });
 
 router.post('/dislike', isAuth(), async (req, res) => {
     const { threadId } = req.body;
     const userId = req.user.id;
+
+    try {
+        const thread = await threadService.dislike(threadId, userId);
+        res.status(201).json(thread);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
 });
 
 router.post(
