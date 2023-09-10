@@ -2,13 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IUser } from '../interfaces/user';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl: string = 'http://localhost:5000';
-
   private endpoints = {
     login: '/api/auth/login',
     register: '/api/auth/register',
@@ -19,7 +18,7 @@ export class AuthService {
 
   login$(email: string, password: string): Observable<IUser | null> {
     return this.http.post<IUser>(
-      `${this.baseUrl}${this.endpoints.login}`,
+      `${environment.apiUrl}${this.endpoints.login}`,
       {
         email,
         password,
@@ -36,7 +35,7 @@ export class AuthService {
     photoURL: string
   ): Observable<IUser> {
     return this.http.post<IUser>(
-      `${this.baseUrl}${this.endpoints.login}`,
+      `${environment.apiUrl}${this.endpoints.login}`,
       { email, password, firstName, lastName, photoURL },
       { withCredentials: true }
     );
@@ -44,7 +43,7 @@ export class AuthService {
 
   logout$(): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(
-      `${this.baseUrl}${this.endpoints.logout}`,
+      `${environment.apiUrl}${this.endpoints.logout}`,
       {},
       { withCredentials: true }
     );
