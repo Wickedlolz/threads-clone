@@ -1,2 +1,3 @@
 # threads-clone
-Threads Clone with Angular, Express, NodeJS, MongoDB
+
+Threads Clone with React, Express, NodeJS, MongoDB
