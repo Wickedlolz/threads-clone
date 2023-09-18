@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    body {
-        @apply m-0 p-0 bg-black flex justify-center h-[100vh] items-center text-white font-sans;
-    }
+body {
+    @apply bg-black;
 }
