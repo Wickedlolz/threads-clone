@@ -7,29 +7,40 @@ const {
 
 const threadSchema = new Schema(
     {
-        title: {
-            type: String,
-            required: true,
-        },
-        description: {
-            type: String,
-            required: true,
-        },
-        owner: {
+        postedBy: {
             type: ObjectId,
             ref: 'User',
             required: true,
         },
-        likes: [
+        text: {
+            type: String,
+            maxLength: 500,
+        },
+        img: {
+            type: String,
+        },
+        likes: {
+            type: [ObjectId],
+            ref: 'User',
+            default: [],
+        },
+        replies: [
             {
-                type: ObjectId,
-                ref: 'User',
-            },
-        ],
-        comments: [
-            {
-                type: ObjectId,
-                ref: 'Comment',
+                userId: {
+                    type: ObjectId,
+                    ref: 'User',
+                    required: true,
+                },
+                text: {
+                    type: String,
+                    required: true,
+                },
+                userProfilePic: {
+                    type: String,
+                },
+                username: {
+                    type: String,
+                },
             },
         ],
     },

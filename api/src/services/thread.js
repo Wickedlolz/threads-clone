@@ -1,5 +1,4 @@
 const Thread = require('../models/Thread');
-const Comment = require('../models/Comment');
 
 exports.getAll = async function () {
     const threads = await Thread.find({}).populate('owner').lean();
@@ -69,14 +68,14 @@ exports.dislike = async function (threadId, userId) {
 
 exports.comment = async function (threadId, comment, userId) {
     const thread = await Thread.findById(threadId);
-    const message = new Comment({
-        comment,
-        userId,
-    });
+    // const message = new Comment({
+    //     comment,
+    //     userId,
+    // });
 
-    await message.save();
+    // await message.save();
 
-    thread.comment.push(message);
+    // thread.comment.push(message);
 
     thread.save();
 
