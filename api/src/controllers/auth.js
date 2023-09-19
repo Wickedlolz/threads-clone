@@ -26,7 +26,7 @@ router.post(
 
     async (req, res) => {
         const { errors } = validationResult(req);
-        const { email, password, firstName, lastName, photoURL } = req.body;
+        const { email, password, name, username, photoURL } = req.body;
 
         try {
             if (errors.length > 0) {
@@ -36,8 +36,8 @@ router.post(
             const user = await authService.register(
                 email,
                 password,
-                firstName,
-                lastName,
+                name,
+                username,
                 photoURL
             );
             const token = await authService.createToken(user);
@@ -45,10 +45,13 @@ router.post(
             const result = {
                 email: user.email,
                 _id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
+                name: user.name,
+                username: user.username,
                 createdAt: user.createdAt,
                 photoURL: user.photoURL,
+                followers: user.followers,
+                following: user.following,
+                bio: user.bio,
             };
 
             res.cookie(process.env.COOKIE_NAME, token, {
@@ -94,10 +97,13 @@ router.post(
             const result = {
                 email: user.email,
                 _id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
+                name: user.name,
+                username: user.username,
                 createdAt: user.createdAt,
                 photoURL: user.photoURL,
+                followers: user.followers,
+                following: user.following,
+                bio: user.bio,
             };
 
             res.cookie(process.env.COOKIE_NAME, token, {
@@ -139,10 +145,13 @@ router.post(
             const result = {
                 email: userWithResetedPassword.email,
                 _id: userWithResetedPassword._id,
-                firstName: userWithResetedPassword.firstName,
-                lastName: userWithResetedPassword.lastName,
+                name: userWithResetedPassword.name,
+                username: userWithResetedPassword.username,
                 createdAt: userWithResetedPassword.createdAt,
                 photoURL: userWithResetedPassword.photoURL,
+                followers: userWithResetedPassword.followers,
+                following: userWithResetedPassword.following,
+                bio: userWithResetedPassword.bio,
             };
 
             res.status(201).json(result);
@@ -154,12 +163,21 @@ router.post(
 );
 
 router.post('/logout', isAuth(), async (req, res) => {
-    res.clearCookie(process.env.COOKIE_NAME, {
-        httpOnly: true,
-        maxAge: new Date(Date.now()),
-    })
-        .status(204)
-        .json({ message: 'Successfully logged out.' });
+    const token = req.cookies[process.env.COOKIE_NAME];
+
+    try {
+        await authService.blacklistToken(token);
+
+        res.clearCookie(process.env.COOKIE_NAME, {
+            httpOnly: true,
+            maxAge: new Date(Date.now()),
+        })
+            .status(204)
+            .json({ message: 'Successfully logged out.' });
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
 });
 
 router.get('/profile', isAuth(), async (req, res) => {
