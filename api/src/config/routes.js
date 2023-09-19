@@ -3,9 +3,11 @@ const router = require('express').Router();
 
 const authController = require('../controllers/auth');
 const threadController = require('../controllers/thread');
+const userController = require('../controllers/user');
 
 router.use('/api/v1/auth', authController);
 router.use('/api/v1/threads', threadController);
+router.use('/api/v1/users', userController);
 
 router.get('/api/test', (req, res) => {
     res.json({
