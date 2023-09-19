@@ -23,7 +23,7 @@ const UserHeader = () => {
                     <h2 className='text-3xl font-bold'>Viktor Dimitrov</h2>
                     <p>
                         viktordimitrov{' '}
-                        <span className='bg-gray-800 text-gray-400 p-1.5 rounded-2xl'>
+                        <span className='text-xs bg-gray-800 text-gray-400 p-1.5 rounded-2xl'>
                             threads.net
                         </span>
                     </p>
@@ -56,7 +56,7 @@ const UserHeader = () => {
                         <CgMoreO />
                     </p>
                     {openMenu && (
-                        <div className='absolute bottom-[-40px] right-3 p-1 bg-gray-600 rounded-md text-white'>
+                        <div className='absolute bottom-0 right-3 p-1 bg-gray-600 rounded-md text-white'>
                             <button
                                 className='hover:bg-gray-500 p-2'
                                 onClick={copyUrl}
