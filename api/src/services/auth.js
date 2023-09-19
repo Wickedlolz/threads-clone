@@ -1,15 +1,10 @@
 /* eslint-disable quotes */
 const User = require('../models/User');
+const TokenBlacklist = require('../models/TokenBlacklist');
 const jwt = require('jsonwebtoken');
 const { compare, hash } = require('bcrypt');
 
-exports.register = async function (
-    email,
-    password,
-    firstName,
-    lastName,
-    photoURL
-) {
+exports.register = async function (email, password, name, username, photoURL) {
     const existing = await getUserByEmail(email);
 
     if (existing) {
@@ -24,8 +19,8 @@ exports.register = async function (
     const user = new User({
         email,
         password: hashedPassword,
-        firstName,
-        lastName,
+        name,
+        username,
         photoURL,
     });
 
@@ -77,9 +72,12 @@ exports.getProfile = async function (userId) {
         email: user.email,
         updatedAt: user.updatedAt,
         _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
+        username: user.username,
         photoURL: user.photoURL,
+        followers: user.followers,
+        following: user.following,
+        bio: user.bio,
     };
 
     return modifiedUser;
@@ -88,8 +86,8 @@ exports.getProfile = async function (userId) {
 exports.createToken = function (user) {
     const tokenPromise = new Promise((resolve, reject) => {
         const payload = {
-            firstName: user.firstName,
-            lastName: user.lastName,
+            name: user.name,
+            username: user.username,
             email: user.email,
             _id: user._id,
         };
@@ -114,6 +112,16 @@ exports.validateToken = function (token) {
 
         return decoded;
     });
+};
+
+exports.isBlacklistedToken = async function (token) {
+    const isBlacklisted = await TokenBlacklist.findOne({ token });
+    return isBlacklisted;
+};
+
+exports.blacklistToken = async function (token) {
+    const blacklistedToken = new TokenBlacklist({ token });
+    blacklistedToken.save();
 };
 
 async function getUserByEmail(email) {

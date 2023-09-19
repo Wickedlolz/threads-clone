@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-const { validateToken } = require('../services/auth');
+const { validateToken, isBlacklistedToken } = require('../services/auth');
 
 module.exports = function () {
     return async (req, res, next) => {
@@ -8,6 +8,11 @@ module.exports = function () {
         if (token) {
             try {
                 const payload = await validateToken(token);
+                const tokenBlacklist = await isBlacklistedToken(token);
+
+                if (tokenBlacklist) {
+                    throw new Error('Blacklisted token!');
+                }
 
                 req.user = {
                     email: payload.email,
