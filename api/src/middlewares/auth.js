@@ -17,6 +17,8 @@ module.exports = function () {
                 req.user = {
                     email: payload.email,
                     id: payload._id,
+                    username: payload.username,
+                    photoURL: payload.photoURL,
                     token,
                 };
             } catch (error) {
