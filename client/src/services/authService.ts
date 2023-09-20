@@ -5,6 +5,7 @@ const endpoints = {
     login: '/api/v1/auth/login',
     register: '/api/v1/auth/register',
     logout: '/api/v1/auth/logout',
+    profile: '/api/v1/auth/profile',
 };
 
 export const login = (email: string, password: string) => {
@@ -17,4 +18,8 @@ export const register = (userDto: IUserDto) => {
 
 export const logout = () => {
     return requester.post(endpoints.logout);
+};
+
+export const getProfile = () => {
+    return requester.get<IUser>(endpoints.profile);
 };
