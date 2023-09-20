@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { IThread } from '../interfaces/thread';
 
 import Spinner from '../components/Spinner';
-import UserPost from '../components/UserPost';
+import UserThread from '../components/UserThread';
 
 const Home = () => {
     const [threads, setThreds] = useState<IThread[]>([]);
@@ -24,7 +24,7 @@ const Home = () => {
     }, []);
 
     return (
-        <div>
+        <section>
             {!isLoading && threads.length === 0 && (
                 <h1>Follow some users to see the feed</h1>
             )}
@@ -34,9 +34,9 @@ const Home = () => {
                 </div>
             )}
             {threads.map((thread) => (
-                <UserPost key={thread._id} />
+                <UserThread key={thread._id} thread={thread} />
             ))}
-        </div>
+        </section>
     );
 };
 
