@@ -89,6 +89,7 @@ exports.createToken = function (user) {
             name: user.name,
             username: user.username,
             email: user.email,
+            photoURL: user.photoURL,
             _id: user._id,
         };
 
