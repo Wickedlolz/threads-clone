@@ -3,8 +3,8 @@ export interface IUserDto {
     password: string;
     name: string;
     username: string;
-    bio: string;
-    photoURL: string;
+    bio?: string;
+    photoURL?: string;
 }
 
 export interface IUser {
