@@ -6,11 +6,13 @@ const { isAuth } = require('../middlewares/guards');
 const { body, validationResult } = require('express-validator');
 const { mapErrors } = require('../utils/mapErrors');
 
-router.get('/', async (req, res) => {
-    try {
-        const posts = await threadService.getAll();
+router.get('/feed', async (req, res) => {
+    const userId = req.user.id;
 
-        res.json(posts);
+    try {
+        const feed = await threadService.getFeed(userId);
+
+        res.json(feed);
     } catch (error) {
         const errors = mapErrors(error);
         res.status(400).json({ message: errors });
@@ -115,31 +117,29 @@ router.post('/like', isAuth(), async (req, res) => {
 });
 
 router.post(
-    '/comment',
+    '/reply/:threadId',
     isAuth(),
-    body('threadId').trim(),
-    body('comment').trim(),
-    body('threadId').notEmpty().withMessage('Thread ID is required!'),
-    body('comment')
-        .notEmpty()
-        .withMessage('Comment is required!')
-        .bail()
-        .isLength({ min: 3 })
-        .withMessage('Comment must be at least 3 characters long!'),
+    body('text').trim(),
+    body('text').notEmpty().withMessage('Text field is required'),
     async (req, res) => {
         const { errors } = validationResult(req);
-        const { threadId, comment } = req.body;
+        const { threadId } = req.params;
         const userId = req.user.id;
+        const profilePic = req.user.photoURL;
+        const username = req.user.username;
+        const { text } = req.body;
 
         try {
             if (errors.length > 0) {
                 throw errors;
             }
 
-            const thread = await threadService.comment(
+            const thread = await threadService.replyById(
                 threadId,
-                comment,
-                userId
+                userId,
+                profilePic,
+                username,
+                text
             );
 
             res.status(201).json(thread);

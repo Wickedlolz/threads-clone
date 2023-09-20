@@ -1,9 +1,18 @@
 const Thread = require('../models/Thread');
+const User = require('../models/User');
 
-exports.getAll = async function () {
-    const threads = await Thread.find({}).populate('postedBy').lean();
+exports.getFeed = async function (userId) {
+    const user = await User.findById(userId);
+    const following = user.following;
 
-    const result = threads.map((thread) => {
+    const feed = await Thread.find({ postedBy: { $in: following } })
+        .populate('postedBy')
+        .sort({
+            createdAt: -1,
+        })
+        .lean();
+
+    const result = feed.map((thread) => {
         return {
             ...thread,
             postedBy: {
@@ -83,18 +92,20 @@ exports.like = async function (threadId, userId) {
     return thread;
 };
 
-exports.comment = async function (threadId, comment, userId) {
+exports.replyById = async function (
+    threadId,
+    userId,
+    profilePic,
+    username,
+    text
+) {
     const thread = await Thread.findById(threadId);
-    // const message = new Comment({
-    //     comment,
-    //     userId,
-    // });
 
-    // await message.save();
+    const reply = { userId, userProfilePic: profilePic, username, text };
 
-    // thread.comment.push(message);
+    thread.replies.push(reply);
 
-    thread.save();
+    await thread.save();
 
     return thread;
 };
