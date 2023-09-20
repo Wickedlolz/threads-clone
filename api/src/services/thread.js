@@ -55,10 +55,13 @@ exports.getById = async function (threadId) {
     return thread;
 };
 
-exports.updateById = async function (threadId, title, description) {
+exports.updateById = async function (threadId, text, img) {
     const thread = await Thread.findById(threadId);
-    thread.title = title;
-    thread.description = description;
+    thread.text = text;
+
+    if (img) {
+        thread.img = img;
+    }
 
     await thread.save();
 
@@ -67,22 +70,14 @@ exports.updateById = async function (threadId, title, description) {
 
 exports.like = async function (threadId, userId) {
     const thread = await Thread.findById(threadId);
-    const isLiked = thread.likes.find((user) => user === userId);
+    const isLiked = thread.likes.includes(userId);
 
     if (isLiked) {
-        throw new Error('You already like this thread!');
+        thread.likes.pull(userId);
+    } else {
+        thread.likes.push(userId);
     }
 
-    thread.likes.push(userId);
-    await thread.save();
-
-    return thread;
-};
-
-exports.dislike = async function (threadId, userId) {
-    const thread = await Thread.findById(threadId);
-
-    thread.likes.pull(userId);
     await thread.save();
 
     return thread;
