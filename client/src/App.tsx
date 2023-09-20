@@ -27,7 +27,7 @@ const App = () => {
                     element={user ? <Home /> : <Navigate to='/login' />}
                 />
                 <Route path='/user' element={<User />} />
-                <Route path='/:username/post/:postId' element={<Post />} />
+                <Route path='/:username/thread/:postId' element={<Post />} />
                 <Route
                     path='/login'
                     element={!user ? <Login /> : <Navigate to='/' />}
