@@ -1,14 +1,14 @@
 import UserHeader from '../components/UserHeader';
-import UserPost from '../components/UserPost';
+import UserThread from '../components/UserThread';
 
 const User = () => {
     return (
         <div>
             <UserHeader />
-            <UserPost />
-            <UserPost />
-            <UserPost />
-            <UserPost />
+            <UserThread />
+            <UserThread />
+            <UserThread />
+            <UserThread />
         </div>
     );
 };
