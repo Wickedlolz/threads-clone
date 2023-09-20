@@ -27,6 +27,16 @@ const SignUp = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
+    /**
+     * Handles user sign-up by registering provided user data.
+     *
+     * This function sets loading state, calls the authentication service to register the user using the provided data,
+     * and updates the application state upon successful registration. If an error occurs during the registration process,
+     * it displays an error toast message.
+     *
+     * @param {Inputs} data - User data for registration.
+     * @returns {void}
+     */
     const handleSignUp: SubmitHandler<Inputs> = (data) => {
         setIsLoading(true);
         authService
