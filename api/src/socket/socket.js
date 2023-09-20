@@ -4,11 +4,7 @@ const express = require('express');
 const Message = require('../models/Message.js');
 const Conversation = require('../models/Conversation.js');
 
-const whitelist = [
-    'http://localhost:3000',
-    'http://localhost:5000',
-    'http://localhost:4200',
-];
+const whitelist = ['http://localhost:5000', 'http://localhost:5173'];
 
 const app = express();
 const server = http.createServer(app);
