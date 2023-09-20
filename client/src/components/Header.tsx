@@ -29,16 +29,13 @@ const Header = () => {
     };
 
     return (
-        <header className='flex justify-between px-2 mt-6 mb-12 items-center sm:px-6'>
-            {user && (
+        <header className='flex justify-between px-3 sm:justify-evenly mt-6 mb-12 items-center'>
+            {user ? (
                 <Link to='/' className='text-white'>
                     <AiFillHome className='text-white' size={28} />
                 </Link>
-            )}
-            {!user && (
-                <Link to='/login' className='text-white'>
-                    Login
-                </Link>
+            ) : (
+                <div></div>
             )}
             <Link to='/'>
                 <img
@@ -49,7 +46,7 @@ const Header = () => {
                     height={36}
                 />
             </Link>
-            {user && (
+            {user ? (
                 <div className='flex items-center gap-4 text-white'>
                     <Link to={`/${user.username}`}>
                         <RxAvatar size={28} />
@@ -61,9 +58,7 @@ const Header = () => {
                         <FiLogOut size={24} />
                     </button>
                 </div>
-            )}
-
-            {!user && (
+            ) : (
                 <Link className='text-white' to='/signup'>
                     Sign up
                 </Link>
