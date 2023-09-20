@@ -1,5 +1,4 @@
 /* eslint-disable quotes */
-// const express = require("express");
 const { app, server } = require('./src/socket/socket');
 const routes = require('./src/config/routes');
 
@@ -9,7 +8,6 @@ async function init() {
     require('dotenv').config();
     await require('./src/config/mongoose')();
 
-    // const app = express();
     require('./src/config/express')(app);
     app.use(routes);
 
