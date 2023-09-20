@@ -46,15 +46,15 @@ Ensure you have the following software installed on your machine:
 2. Install dependencies:
    Navigate to the backend and frontend directories separately and install the dependencies:
 
-#### #Backend
+    #### Backend
 
-`cd api`<br/>
-`npm install`<br/>
+    `cd api`  
+     `npm install`<br/>
 
-#### #Frontend
+    #### Frontend
 
-`cd client`<br/>
-`npm install`
+    `cd client`  
+     `npm install`
 
 ### Configuration
 
