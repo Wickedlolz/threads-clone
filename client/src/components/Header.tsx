@@ -37,15 +37,14 @@ const Header = () => {
             ) : (
                 <div></div>
             )}
-            <Link to='/'>
-                <img
-                    className='w-7 h-7 object-cover'
-                    src={DarkLogo}
-                    alt='threads logo'
-                    width={36}
-                    height={36}
-                />
-            </Link>
+
+            <img
+                className='w-7 h-7 object-cover'
+                src={DarkLogo}
+                alt='threads logo'
+                width={36}
+                height={36}
+            />
             {user ? (
                 <div className='flex items-center gap-4 text-white'>
                     <Link to={`/${user.username}`}>
