@@ -5,7 +5,7 @@ import Header from '../components/Header';
 
 const MainLayout = () => {
     return (
-        <div>
+        <>
             <Header />
             <main className='max-w-2xl m-auto text-white'>
                 <Outlet />
@@ -22,7 +22,7 @@ const MainLayout = () => {
                 pauseOnHover
                 theme='dark'
             />
-        </div>
+        </>
     );
 };
 
