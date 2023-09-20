@@ -20,35 +20,27 @@ router.get('/', async (req, res) => {
 router.post(
     '/',
     isAuth(),
-    body('title').trim(),
-    body('description').trim(),
-    body('title')
+    body('text').trim(),
+    body('text')
         .notEmpty()
-        .withMessage('Post Title is required!')
-        .bail()
-        .isLength({ min: 5 })
-        .withMessage('Post Title must be at least 5 characters long'),
-    body('description')
-        .notEmpty()
-        .withMessage('Description is required!')
+        .withMessage('Text is required!')
         .bail()
         .isLength({ min: 10 })
-        .withMessage('Description must be at least 10 characters long'),
+        .withMessage('Text must be at least 10 characters long')
+        .isLength({ max: 500 })
+        .withMessage('Text must be less then 500 characters long'),
     async (req, res) => {
         const { errors } = validationResult(req);
-        const { title, description } = req.body;
+        const userId = req.user.id;
+        const { text, img } = req.body;
 
         try {
             if (errors.length > 0) {
                 throw errors;
             }
 
-            const newPost = await threadService.create(
-                title,
-                description,
-                req.user._id
-            );
-            res.json(newPost);
+            const newPost = await threadService.create(userId, text, img);
+            res.status(201).json(newPost);
         } catch (error) {
             const errors = mapErrors(error);
             res.status(400).json({ message: errors });
@@ -170,5 +162,17 @@ router.post(
         }
     }
 );
+
+router.delete('/:threadId', isAuth(), async (req, res) => {
+    const { threadId } = req.params;
+
+    try {
+        const deletedThread = await threadService.deleteById(threadId);
+        res.json(deletedThread);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
 
 module.exports = router;
