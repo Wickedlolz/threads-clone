@@ -4,11 +4,11 @@ const { isAuth } = require('../middlewares/guards');
 const userService = require('../services/user');
 const { mapErrors } = require('../utils/mapErrors');
 
-router.get('/:userId', async (req, res) => {
-    const { userId } = req.params;
+router.get('/:username', async (req, res) => {
+    const { username } = req.params;
 
     try {
-        const user = await userService.getUserById(userId);
+        const user = await userService.getUserByUsername(username);
 
         if (!user) {
             res.json({ message: 'User not found' });
