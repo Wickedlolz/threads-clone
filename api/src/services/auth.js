@@ -3,6 +3,7 @@ const User = require('../models/User');
 const TokenBlacklist = require('../models/TokenBlacklist');
 const jwt = require('jsonwebtoken');
 const { compare, hash } = require('bcrypt');
+const { v2: cloudinary } = require('cloudinary');
 
 exports.register = async function (email, password, name, username, photoURL) {
     const existing = await getUserByEmail(email);
@@ -81,6 +82,33 @@ exports.getProfile = async function (userId) {
     };
 
     return modifiedUser;
+};
+
+exports.updateProfile = async function (userId, userData) {
+    const user = await User.findById(userId);
+
+    if (userData.profilePic) {
+        if (user.photoURL) {
+            await cloudinary.uploader.destroy(
+                user.photoURL.split('/').pop().split('.')[0]
+            );
+        }
+
+        const uploadedResponse = await cloudinary.uploader.upload(
+            userData.profilePic
+        );
+        userData.profilePic = uploadedResponse.secure_url;
+    }
+
+    user.name = userData.name || user.name;
+    user.username = userData.username || user.username;
+    user.email = userData.email || user.email;
+    user.photoURL = userData.profilePic || user.photoURL;
+    user.bio = userData.bio || user.bio;
+
+    await user.save();
+
+    return user;
 };
 
 exports.createToken = function (user) {

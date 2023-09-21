@@ -192,4 +192,25 @@ router.get('/profile', isAuth(), async (req, res) => {
     }
 });
 
+router.put('/profile', isAuth(), async (req, res) => {
+    const userId = req.user.id;
+    const { name, username, email, profilePic, bio } = req.body;
+
+    try {
+        const userData = {
+            name,
+            username,
+            email,
+            profilePic,
+            bio,
+        };
+        const updatedUser = await authService.updateProfile(userId, userData);
+
+        res.status(201).json(updatedUser);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
 module.exports = router;
