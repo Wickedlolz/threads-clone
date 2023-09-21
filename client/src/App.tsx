@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from './store';
+import { Route, Routes } from 'react-router-dom';
+import { useAppDispatch } from './store';
 import { getUser } from './store/reduces/authSlice';
 
 import User from './pages/User';
@@ -10,9 +10,11 @@ import SignUp from './pages/SignUp';
 import Home from './pages/Home';
 import MainLayout from './layouts/MainLayout';
 import UpdateProfile from './pages/UpdateProfile';
+import AuthGuard from './components/AuthGuard';
+import GuestGuard from './components/GuestGuard';
+import NotFound from './pages/NotFound';
 
 const App = () => {
-    const user = useAppSelector((state) => state.auth.user);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -23,24 +25,17 @@ const App = () => {
     return (
         <Routes>
             <Route element={<MainLayout />}>
-                <Route
-                    path='/'
-                    element={user ? <Home /> : <Navigate to='/login' />}
-                />
+                <Route element={<AuthGuard />}>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/profile/update' element={<UpdateProfile />} />
+                </Route>
                 <Route path='/:username/thread/:postId' element={<Post />} />
-                <Route
-                    path='/login'
-                    element={!user ? <Login /> : <Navigate to='/' />}
-                />
-                <Route
-                    path='/signup'
-                    element={!user ? <SignUp /> : <Navigate to='/' />}
-                />
+                <Route element={<GuestGuard />}>
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/signup' element={<SignUp />} />
+                </Route>
                 <Route path='/profile/:username' element={<User />} />
-                <Route
-                    path='/profile/update'
-                    element={user ? <UpdateProfile /> : <Navigate to='/' />}
-                />
+                <Route path='/*' element={<NotFound />} />
             </Route>
         </Routes>
     );
