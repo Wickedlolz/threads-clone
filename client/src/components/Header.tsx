@@ -10,6 +10,7 @@ import { RxAvatar } from 'react-icons/rx';
 import { FiLogOut } from 'react-icons/fi';
 import { BsFillChatQuoteFill } from 'react-icons/bs';
 import { removeUser } from '../store/reduces/authSlice';
+import { clearThreads } from '../store/reduces/threadsSlice';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Header = () => {
             .logout()
             .then(() => {
                 dispatch(removeUser());
+                dispatch(clearThreads());
                 navigate('/');
             })
             .catch((error) => {
@@ -58,7 +60,7 @@ const Header = () => {
                     </button>
                 </div>
             ) : (
-                <Link className='text-white' to='/signup'>
+                <Link className='primaryBtn' to='/signup'>
                     Sign up
                 </Link>
             )}
