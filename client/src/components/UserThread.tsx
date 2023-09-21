@@ -65,13 +65,15 @@ const UserThread = ({ thread }: UserThreadType) => {
                         </div>
                     </div>
                     <p className='font-sm'>{thread.text}</p>
-                    <div className='rounded-md overflow-hidden border-[1px] border-gray-400'>
-                        <img
-                            className='w-full'
-                            src='https://raw.githubusercontent.com/Wickedlolz/bazaar/main/src/assets/bannerone.jpeg'
-                            alt='first post'
-                        />
-                    </div>
+                    {thread.img && (
+                        <div className='rounded-md overflow-hidden border-[1px] border-gray-400'>
+                            <img
+                                className='w-full'
+                                src={thread.img}
+                                alt={thread.text}
+                            />
+                        </div>
+                    )}
                     <div className='flex gap-3 my-2'>
                         <Actions liked={liked} setLiked={setLiked} />
                     </div>
