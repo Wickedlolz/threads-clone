@@ -3,10 +3,8 @@ import { IUser } from '../../interfaces/user';
 import { GET_USER } from '../actions/user';
 import { authService } from '../../services';
 
-export const getUser = createAsyncThunk(GET_USER, async () => {
-    const result: IUser = await authService.getProfile();
-
-    return result;
+export const getUser = createAsyncThunk(GET_USER, () => {
+    return authService.getProfile();
 });
 
 export interface AuthState {
