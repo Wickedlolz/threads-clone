@@ -24,6 +24,11 @@ const UpdateProfile = () => {
     const { register, handleSubmit } = useForm<Inputs>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    /**
+     * Handles updating user profile information and photoURL.
+     *
+     * @param {Inputs} data - The user data to update the profile with.
+     */
     const handleUpdateProfile: SubmitHandler<Inputs> = (data) => {
         setIsLoading(true);
         authService
