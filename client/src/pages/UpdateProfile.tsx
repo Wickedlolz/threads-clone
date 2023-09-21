@@ -5,6 +5,7 @@ import usePreviewImage from '../hooks/usePreviewImage';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { authService } from '../services';
 import { toast } from 'react-toastify';
+
 import Spinner from '../components/Spinner';
 
 interface Inputs {
@@ -29,6 +30,7 @@ const UpdateProfile = () => {
             .updateProfile({ ...data, photoURL: imageUrl })
             .then((user) => {
                 dispatch(setUser(user));
+                toast.success('Profile updated successfully.');
             })
             .catch((error) => toast.error(error.message))
             .finally(() => setIsLoading(false));
