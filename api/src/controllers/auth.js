@@ -206,7 +206,19 @@ router.put('/profile', isAuth(), async (req, res) => {
         };
         const updatedUser = await authService.updateProfile(userId, userData);
 
-        res.status(201).json(updatedUser);
+        const result = {
+            email: updatedUser.email,
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            username: updatedUser.username,
+            createdAt: updatedUser.createdAt,
+            photoURL: updatedUser.photoURL,
+            followers: updatedUser.followers,
+            following: updatedUser.following,
+            bio: updatedUser.bio,
+        };
+
+        res.status(201).json(result);
     } catch (error) {
         const errors = mapErrors(error);
         res.status(400).json({ message: errors });
