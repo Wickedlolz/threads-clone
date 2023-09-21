@@ -23,3 +23,7 @@ export const logout = () => {
 export const getProfile = () => {
     return requester.get<IUser>(endpoints.profile);
 };
+
+export const updateProfile = (usetData: IUserDto) => {
+    return requester.put<IUser>(endpoints.profile, usetData);
+};
