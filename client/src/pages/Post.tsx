@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import VerifiedBadge from '../assets/verified_badge.svg';
 import { BsThreeDots } from 'react-icons/bs';
 import Actions from '../components/Actions';
@@ -16,7 +18,10 @@ const Post = () => {
                         src='https://bit.ly/kent-c-dodds'
                         alt='user image'
                     />
-                    <div className='flex gap-2 items-center'>
+                    <Link
+                        to='/profile/someone'
+                        className='flex gap-2 items-center'
+                    >
                         <p className='font-sm font-bold'>Viktor Dimitrov</p>
                         <img
                             className='w-4 h-4 object-cover'
@@ -25,7 +30,7 @@ const Post = () => {
                             width={16}
                             height={16}
                         />
-                    </div>
+                    </Link>
                 </div>
                 <div className='flex items-center gap-3'>
                     <p className='text-sm text-gray-400'>1d</p>
