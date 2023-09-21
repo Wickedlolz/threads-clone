@@ -5,6 +5,7 @@ import { authService } from '../services';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '../store';
 import { setUser } from '../store/reduces/authSlice';
+import Spinner from '../components/Spinner';
 
 interface Inputs {
     email: string;
@@ -122,8 +123,9 @@ const Login = () => {
                         <button
                             disabled={isLoading}
                             type='submit'
-                            className='flex w-full justify-center primaryBtn'
+                            className='flex w-full justify-center items-center primaryBtn'
                         >
+                            {isLoading && <Spinner isSmall />}
                             Sign in
                         </button>
                     </div>

@@ -7,13 +7,13 @@ import { authService } from '../services';
 import { toast } from 'react-toastify';
 
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import Spinner from '../components/Spinner';
 
 interface Inputs {
     name: string;
     username: string;
     email: string;
     password: string;
-    rePassword: string;
 }
 
 const SignUp = () => {
@@ -79,7 +79,7 @@ const SignUp = () => {
                                     {...register('name', {
                                         required: {
                                             value: true,
-                                            message: 'Name is required!',
+                                            message: 'Full Name is required!',
                                         },
                                     })}
                                     name='name'
@@ -219,8 +219,9 @@ const SignUp = () => {
                         <button
                             disabled={isLoading}
                             type='submit'
-                            className='flex w-full justify-center primaryBtn'
+                            className='flex w-full justify-center items-center primaryBtn'
                         >
+                            {isLoading && <Spinner isSmall />}
                             Sign in
                         </button>
                     </div>
