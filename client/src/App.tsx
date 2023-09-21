@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Home from './pages/Home';
 import MainLayout from './layouts/MainLayout';
+import UpdateProfile from './pages/UpdateProfile';
 
 const App = () => {
     const user = useAppSelector((state) => state.auth.user);
@@ -35,6 +36,10 @@ const App = () => {
                 <Route
                     path='/signup'
                     element={!user ? <SignUp /> : <Navigate to='/' />}
+                />
+                <Route
+                    path='/profile/update'
+                    element={user ? <UpdateProfile /> : <Navigate to='/' />}
                 />
             </Route>
         </Routes>
