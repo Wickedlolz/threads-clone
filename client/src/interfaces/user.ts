@@ -1,10 +1,10 @@
 export interface IUserDto {
     email: string;
-    password: string;
+    password?: string;
     name: string;
     username: string;
     bio?: string;
-    photoURL?: string;
+    photoURL?: string | ArrayBuffer | null;
 }
 
 export interface IUser {
