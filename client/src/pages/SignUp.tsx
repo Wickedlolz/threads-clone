@@ -219,7 +219,7 @@ const SignUp = () => {
                         <button
                             disabled={isLoading}
                             type='submit'
-                            className='flex w-full justify-center rounded-md bg-gray-700 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 duration-300'
+                            className='flex w-full justify-center primaryBtn'
                         >
                             Sign in
                         </button>
