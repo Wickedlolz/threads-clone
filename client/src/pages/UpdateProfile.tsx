@@ -42,7 +42,7 @@ const UpdateProfile = () => {
     };
 
     return (
-        <section className='w-96 mx-auto'>
+        <section className='w-96 mx-auto bg-gray-900 rounded-xl'>
             <div className='mt-5 md:mt-0 md:col-span-2'>
                 <form onSubmit={handleSubmit(handleUpdateProfile)}>
                     <div className='shadow sm:rounded-md sm:overflow-hidden'>
