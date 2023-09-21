@@ -87,7 +87,7 @@ exports.getProfile = async function (userId) {
 exports.updateProfile = async function (userId, userData) {
     const user = await User.findById(userId);
 
-    if (userData.profilePic) {
+    if (userData.photoURL) {
         if (user.photoURL) {
             await cloudinary.uploader.destroy(
                 user.photoURL.split('/').pop().split('.')[0]
@@ -95,15 +95,15 @@ exports.updateProfile = async function (userId, userData) {
         }
 
         const uploadedResponse = await cloudinary.uploader.upload(
-            userData.profilePic
+            userData.photoURL
         );
-        userData.profilePic = uploadedResponse.secure_url;
+        userData.photoURL = uploadedResponse.secure_url;
     }
 
     user.name = userData.name || user.name;
     user.username = userData.username || user.username;
     user.email = userData.email || user.email;
-    user.photoURL = userData.profilePic || user.photoURL;
+    user.photoURL = userData.photoURL || user.photoURL;
     user.bio = userData.bio || user.bio;
 
     await user.save();

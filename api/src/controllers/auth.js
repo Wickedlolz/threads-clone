@@ -194,14 +194,14 @@ router.get('/profile', isAuth(), async (req, res) => {
 
 router.put('/profile', isAuth(), async (req, res) => {
     const userId = req.user.id;
-    const { name, username, email, profilePic, bio } = req.body;
+    const { name, username, email, photoURL, bio } = req.body;
 
     try {
         const userData = {
             name,
             username,
             email,
-            profilePic,
+            photoURL,
             bio,
         };
         const updatedUser = await authService.updateProfile(userId, userData);
