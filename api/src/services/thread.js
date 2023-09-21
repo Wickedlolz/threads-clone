@@ -33,6 +33,39 @@ exports.getFeed = async function (userId) {
     return result;
 };
 
+exports.getUserThreads = async function (username) {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+        throw new Error({ message: 'User not found' });
+    }
+
+    const threads = await Thread.find({ postedBy: user._id })
+        .sort({ createdAt: -1 })
+        .populate('postedBy')
+        .lean();
+
+    const result = threads.map((thread) => {
+        return {
+            ...thread,
+            postedBy: {
+                createdAt: thread.postedBy.createdAt,
+                email: thread.postedBy.email,
+                updatedAt: thread.postedBy.updatedAt,
+                _id: thread.postedBy._id,
+                name: thread.postedBy.name,
+                username: thread.postedBy.username,
+                photoURL: thread.postedBy.photoURL,
+                followers: thread.postedBy.followers,
+                following: thread.postedBy.following,
+                bio: thread.postedBy.bio,
+            },
+        };
+    });
+
+    return result;
+};
+
 exports.create = async function (userId, text, img) {
     const thread = new Thread({ postedBy: userId, text });
 

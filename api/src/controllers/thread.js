@@ -19,6 +19,18 @@ router.get('/feed', async (req, res) => {
     }
 });
 
+router.get('/:username', isAuth(), async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const threads = await threadService.getUserThreads(username);
+        res.json(threads);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
 router.post(
     '/',
     isAuth(),
