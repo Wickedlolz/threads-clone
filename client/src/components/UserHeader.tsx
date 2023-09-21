@@ -1,14 +1,36 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../store';
 import { toast } from 'react-toastify';
+import { userService } from '../services';
+import { IUser } from '../interfaces/user';
 
 import { AiOutlineInstagram } from 'react-icons/ai';
 import { CgMoreO } from 'react-icons/cg';
+import Spinner from './Spinner';
 
-const UserHeader = () => {
+type UserHeaderProps = {
+    user: IUser;
+};
+
+const UserHeader = ({ user }: UserHeaderProps) => {
+    const authUser = useAppSelector((state) => state.auth.user);
     const [openMenu, setOpenMenu] = useState<boolean>(false);
+    const [following, setFollowing] = useState<boolean>(
+        user.followers.includes(authUser!._id)
+    );
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const copyUrl = () => {
+    /**
+     * Copies the current URL to the clipboard and displays a success message.
+     *
+     * This function retrieves the current URL from the browser's window object,
+     * utilizes the navigator clipboard API to write the URL to the clipboard,
+     * and then updates the UI accordingly.
+     *
+     * @returns {void}
+     */
+    const copyUrl = (): void => {
         const currentUrl = window.location.href;
         navigator.clipboard.writeText(currentUrl).then(() => {
             setOpenMenu(false);
@@ -16,13 +38,46 @@ const UserHeader = () => {
         });
     };
 
+    /**
+     * Handles the logic for following or unfollowing a user.
+     *
+     * This function toggles the follow/unfollow status for a user by invoking
+     * the appropriate service method and updating the user's followers accordingly.
+     * It displays a success message upon successful follow or unfollow,
+     * and handles errors by displaying an error message.
+     *
+     * @returns {void}
+     * @throws {Error} If there's an error during the follow/unfollow operation.
+     */
+    const handleFollowUnfollow = (): void => {
+        setIsLoading(true);
+        userService
+            .followUnfollow(user._id)
+            .then(() => {
+                if (following) {
+                    toast.success(`Unfollowing ${user.name}`);
+                    user.followers = user.followers.filter(
+                        (userId) => userId !== authUser!._id
+                    );
+
+                    setFollowing(false);
+                } else {
+                    toast.success(`Following ${user.name}`);
+                    user.followers.push(authUser!._id);
+                    setFollowing(true);
+                }
+            })
+            .catch((error) => toast.error(error.message))
+            .finally(() => setIsLoading(false));
+    };
+
     return (
         <article className='relative p-3 flex flex-col gap-5'>
             <div className='flex justify-between my-3'>
                 <div className='flex flex-col gap-4'>
-                    <h2 className='text-3xl font-bold'>Viktor Dimitrov</h2>
+                    <h2 className='text-3xl font-bold'>{user?.name}</h2>
                     <p>
-                        viktordimitrov{' '}
+                        {user?.username}{' '}
                         <span className='text-xs bg-gray-800 text-gray-400 p-1.5 rounded-2xl'>
                             threads.net
                         </span>
@@ -31,18 +86,29 @@ const UserHeader = () => {
                 <div>
                     <img
                         className='w-28 h-28 object-cover rounded-full'
-                        src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80'
+                        src={user?.photoURL}
                         alt='user profile'
                     />
                 </div>
             </div>
-            <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Accusantium, quia.
-            </p>
+            <p>{user?.bio}</p>
+            {user._id === authUser?._id ? (
+                <Link to='/profile/update'>
+                    <button className='primaryBtn'>Update Profile</button>
+                </Link>
+            ) : (
+                <button
+                    disabled={isLoading}
+                    className='primaryBtn w-28'
+                    onClick={handleFollowUnfollow}
+                >
+                    {isLoading && <Spinner isSmall />}
+                    {following ? 'Unfollow' : 'Follow'}
+                </button>
+            )}
             <div className='flex justify-between mr-5'>
                 <p className='text-gray-400 flex gap-2'>
-                    <span>X followers</span> &#8226;{' '}
+                    <span>{user?.followers.length} followers</span> &#8226;{' '}
                     <Link to='#/'>instagram.com</Link>
                 </p>
                 <div className='flex gap-3 items-center'>
