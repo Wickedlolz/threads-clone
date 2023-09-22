@@ -4,7 +4,7 @@ import { useAppDispatch } from './store';
 import { getUser } from './store/reduces/authSlice';
 
 import User from './pages/User';
-import Post from './pages/Post';
+import Thread from './pages/Thread';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Home from './pages/Home';
@@ -26,16 +26,19 @@ const App = () => {
         <Routes>
             <Route element={<MainLayout />}>
                 <Route element={<AuthGuard />}>
-                    <Route path='/' element={<Home />} />
-                    <Route path='/profile/update' element={<UpdateProfile />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/profile/update" element={<UpdateProfile />} />
                 </Route>
-                <Route path='/:username/thread/:postId' element={<Post />} />
+                <Route
+                    path="/:username/thread/:threadId"
+                    element={<Thread />}
+                />
                 <Route element={<GuestGuard />}>
-                    <Route path='/login' element={<Login />} />
-                    <Route path='/signup' element={<SignUp />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<SignUp />} />
                 </Route>
-                <Route path='/profile/:username' element={<User />} />
-                <Route path='/*' element={<NotFound />} />
+                <Route path="/profile/:username" element={<User />} />
+                <Route path="/*" element={<NotFound />} />
             </Route>
         </Routes>
     );
