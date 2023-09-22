@@ -6,6 +6,9 @@ const endpoints = {
     userThreads: (username: string) => `/api/v1/threads/${username}`,
     creatThread: '/api/v1/threads',
     getThreadById: (threadId: string) => `/api/v1/threads/thread/${threadId}`,
+    likeThreadById: (threadId: string) => `/api/v1/threads/like/${threadId}`,
+    replyToThreadById: (threadId: string) =>
+        `/api/v1/threads/reply/${threadId}`,
 };
 
 export const getFeed = () => {
@@ -22,4 +25,14 @@ export const createThread = (text: string, img: string) => {
 
 export const getThreadById = (threadId: string) => {
     return requester.get<IThread>(endpoints.getThreadById(threadId));
+};
+
+export const likeUnlikeThreadById = (threadId: string) => {
+    return requester.put<IThread>(endpoints.likeThreadById(threadId));
+};
+
+export const replyToThreadById = (threadId: string, threadText: string) => {
+    return requester.put<IThread>(endpoints.replyToThreadById(threadId), {
+        text: threadText,
+    });
 };
