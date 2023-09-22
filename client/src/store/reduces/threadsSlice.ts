@@ -9,10 +9,12 @@ export const loadFeed = createAsyncThunk(GET_FEED, async () => {
 
 export interface ThreadsState {
     feed: IThread[] | null;
+    loading: boolean;
 }
 
 const initialState: ThreadsState = {
     feed: null,
+    loading: false,
 };
 
 export const threadsSlice = createSlice({
@@ -39,9 +41,14 @@ export const threadsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(loadFeed.fulfilled, (state, action) => {
-            state.feed = action.payload;
-        });
+        builder
+            .addCase(loadFeed.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(loadFeed.fulfilled, (state, action) => {
+                state.loading = false;
+                state.feed = action.payload;
+            });
     },
 });
 
