@@ -10,24 +10,32 @@ import { BsThreeDots } from 'react-icons/bs';
 import Actions from '../components/Actions';
 import Comment from '../components/Comment';
 import Spinner from '../components/Spinner';
+import { useAppSelector } from '../store';
 
 const Thread = () => {
     const { threadId } = useParams();
+    const feed = useAppSelector((state) => state.threads.feed);
     const [thread, setThread] = useState<IThread | null>(null);
-    const [liked, setLiked] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const passedTime = moment(thread?.createdAt).fromNow();
 
     useEffect(() => {
         setIsLoading(true);
-        threadService
-            .getThreadById(threadId!)
-            .then((thread) => {
-                setThread(thread);
-            })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setIsLoading(false));
-    }, [threadId]);
+        const currentThread = feed?.find((thread) => thread?._id === threadId);
+
+        if (currentThread) {
+            setThread(currentThread);
+            setIsLoading(false);
+        } else {
+            threadService
+                .getThreadById(threadId!)
+                .then((thread) => {
+                    setThread(thread);
+                })
+                .catch((error) => toast.error(error.message))
+                .finally(() => setIsLoading(false));
+        }
+    }, [threadId, feed]);
 
     if (isLoading) {
         return (
@@ -80,18 +88,9 @@ const Thread = () => {
                 </div>
             )}
             <div className="flex gap-3 my-3">
-                <Actions liked={liked} setLiked={setLiked} />
+                <Actions thread={thread} />
             </div>
-            {/* TODO: Separate this items to reused in other places */}
-            <div className="flex gap-2 items-center">
-                <p className="text-gray-500 font-sm">
-                    {thread?.replies.length} replies
-                </p>
-                <div className="w-0.5 h-0.5 rounded-full bg-gray-500"></div>
-                <p className="text-gray-500 font-sm">
-                    {thread?.likes.length} likes
-                </p>
-            </div>
+
             <p className="w-full h-[1px] bg-gray-500 my-4"></p>
             <div className="flex justify-between">
                 <div className="flex gap-2 items-center">
@@ -105,8 +104,8 @@ const Thread = () => {
                 </button>
             </div>
             <p className="w-full h-[1px] bg-gray-500 my-4"></p>
-            {thread?.replies.map(() => (
-                <Comment />
+            {thread?.replies.map((reply) => (
+                <Comment key={reply._id} reply={reply} />
             ))}
         </section>
     );
