@@ -1,24 +1,56 @@
-import { MouseEvent } from 'react';
+import { Dispatch, MouseEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../store';
 import { IThread } from '../interfaces/thread';
+import { threadService } from '../services';
+import { toast } from 'react-toastify';
 import moment from 'moment';
 
 import Actions from './Actions';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaRegFaceFrownOpen } from 'react-icons/fa6';
+import { AiOutlineDelete } from 'react-icons/ai';
 import VerifiedBadge from '../assets/verified_badge.svg';
 
 type UserThreadType = {
     thread: IThread;
+    threads?: IThread[];
+    setThreads?: Dispatch<React.SetStateAction<IThread[]>>;
 };
 
-const UserThread = ({ thread }: UserThreadType) => {
+const UserThread = ({ thread, threads, setThreads }: UserThreadType) => {
+    const user = useAppSelector((state) => state.auth.user);
     const navigate = useNavigate();
     const passedTime = moment(thread.createdAt).fromNow();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const navigateToUserProfile = (event: MouseEvent<HTMLImageElement>) => {
         event.preventDefault();
         navigate(`/profile/${thread.postedBy.username}`);
+    };
+
+    const handleDeleteThread = (event: MouseEvent) => {
+        event.preventDefault();
+
+        if (isLoading) {
+            return;
+        }
+
+        setIsLoading(true);
+        threadService
+            .deleteThreadById(thread._id)
+            .then((deletedThread) => {
+                if (threads && setThreads) {
+                    const filteredThreads = threads.filter(
+                        (thread) => thread._id !== deletedThread._id
+                    );
+                    setThreads(filteredThreads);
+                }
+
+                toast.success('Successfully deleted.');
+            })
+            .catch((error) => toast.error(error.message))
+            .finally(() => setIsLoading(false));
     };
 
     return (
@@ -83,7 +115,13 @@ const UserThread = ({ thread }: UserThreadType) => {
                                 <p className="font-sm text-xs w-24 text-right text-gray-400">
                                     {passedTime}
                                 </p>
-                                <BsThreeDots />
+                                {user?._id === thread?.postedBy?._id ? (
+                                    <AiOutlineDelete
+                                        onClick={handleDeleteThread}
+                                    />
+                                ) : (
+                                    <BsThreeDots />
+                                )}
                             </div>
                         </div>
                         <p className="font-sm">{thread.text}</p>

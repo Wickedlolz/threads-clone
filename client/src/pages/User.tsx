@@ -54,9 +54,18 @@ const User = () => {
             {!isLoading && userData ? (
                 <>
                     <UserHeader user={userData} />
-                    {threads.map((thread) => (
-                        <UserThread key={thread._id} thread={thread} />
-                    ))}
+                    {threads.length === 0 && (
+                        <h1 className="text-center">User has no threads.</h1>
+                    )}
+                    {threads.length > 0 &&
+                        threads.map((thread) => (
+                            <UserThread
+                                key={thread._id}
+                                thread={thread}
+                                threads={threads}
+                                setThreads={setThreads}
+                            />
+                        ))}
                 </>
             ) : (
                 <Spinner />
