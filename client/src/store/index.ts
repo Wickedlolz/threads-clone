@@ -3,13 +3,11 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 import authReducer from './reduces/authSlice';
 import threadReducer from './reduces/threadsSlice';
-import replyModalReducer from './reduces/replyModalSlice';
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
         threads: threadReducer,
-        replyModal: replyModalReducer,
     },
 });
 
