@@ -52,7 +52,7 @@ const Thread = () => {
                     <img
                         className="w-10 h-10 rounded-full"
                         src={thread?.postedBy.photoURL}
-                        alt="user image"
+                        alt={thread?.postedBy.name}
                     />
                     <Link
                         to={`/profile/${thread?.postedBy.username}`}
@@ -104,9 +104,11 @@ const Thread = () => {
                 </button>
             </div>
             <p className="w-full h-[1px] bg-gray-500 my-4"></p>
-            {thread?.replies.map((reply) => (
-                <Comment key={reply._id} reply={reply} />
-            ))}
+            <div className="w-full h-96 overflow-y-auto scroll-smooth hover:scroll-auto">
+                {thread?.replies.map((reply) => (
+                    <Comment key={reply._id} reply={reply} />
+                ))}
+            </div>
         </section>
     );
 };
