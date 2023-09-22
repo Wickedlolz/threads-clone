@@ -1,15 +1,19 @@
-import { FormEvent, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { closeModal } from '../store/reduces/replyModalSlice';
+import { Dispatch, FormEvent, useState } from 'react';
+import { useAppDispatch } from '../store';
 import { updateThread } from '../store/reduces/threadsSlice';
 import { threadService } from '../services';
 import { toast } from 'react-toastify';
+import { IThread } from '../interfaces/thread';
 
 import Spinner from './Spinner';
 
-const ReplyModal = () => {
+type ReplyModalProps = {
+    thread: IThread | null;
+    setOpenReplyModal: Dispatch<React.SetStateAction<boolean>>;
+};
+
+const ReplyModal = ({ thread, setOpenReplyModal }: ReplyModalProps) => {
     const dispatch = useAppDispatch();
-    const { replyTo, threadId } = useAppSelector((state) => state.replyModal);
     const [replyText, setReplyText] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -26,11 +30,11 @@ const ReplyModal = () => {
 
         setIsLoading(true);
         threadService
-            .replyToThreadById(threadId!, replyText)
+            .replyToThreadById(thread!._id, replyText)
             .then((thread) => {
                 dispatch(updateThread(thread));
-                dispatch(closeModal());
                 toast.success('Reply successfully.');
+                setOpenReplyModal(false);
             })
             .catch((error) => toast.error(error.message))
             .finally(() => setIsLoading(false));
@@ -42,7 +46,7 @@ const ReplyModal = () => {
                 <button
                     type="button"
                     className="absolute top-4 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                    onClick={() => dispatch(closeModal())}
+                    onClick={() => setOpenReplyModal(false)}
                 >
                     <svg
                         className="w-3 h-3"
@@ -63,7 +67,7 @@ const ReplyModal = () => {
                 </button>
                 <div className="px-6 py-6 lg:px-8">
                     <h3 className="mb-6 text-xl font-medium text-gray-900 dark:text-white">
-                        Reply to @{replyTo}
+                        Reply to @{thread?.postedBy.username}
                     </h3>
                     <form className="space-y-6" onSubmit={handleReply}>
                         <div>
