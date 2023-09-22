@@ -30,7 +30,7 @@ const User = () => {
                     setThreads(threads);
                 })
                 .catch((error) => {
-                    toast.error(error.mesage);
+                    toast.error(error.message);
                     navigate('/');
                 })
                 .finally(() => setIsLoading(false));
