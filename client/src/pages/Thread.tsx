@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { threadService } from '../services';
+import { toast } from 'react-toastify';
+import { IThread } from '../interfaces/thread';
+import moment from 'moment';
 
 import VerifiedBadge from '../assets/verified_badge.svg';
 import { BsThreeDots } from 'react-icons/bs';
 import Actions from '../components/Actions';
 import Comment from '../components/Comment';
-import { threadService } from '../services';
-import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
-import { IThread } from '../interfaces/thread';
 
 const Thread = () => {
     const { threadId } = useParams();
     const [thread, setThread] = useState<IThread | null>(null);
     const [liked, setLiked] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const passedTime = moment(thread?.createdAt).fromNow();
 
     useEffect(() => {
         setIsLoading(true);
@@ -45,7 +47,7 @@ const Thread = () => {
                         alt="user image"
                     />
                     <Link
-                        to="/profile/someone"
+                        to={`/profile/${thread?.postedBy.username}`}
                         className="flex gap-2 items-center"
                     >
                         <p className="font-sm font-bold">
@@ -61,7 +63,9 @@ const Thread = () => {
                     </Link>
                 </div>
                 <div className="flex items-center gap-3">
-                    <p className="text-sm text-gray-400">1d</p>
+                    <p className="font-sm text-xs w-24 text-right text-gray-400">
+                        {passedTime}
+                    </p>
                     <BsThreeDots />
                 </div>
             </div>
@@ -101,7 +105,7 @@ const Thread = () => {
                 </button>
             </div>
             <p className="w-full h-[1px] bg-gray-500 my-4"></p>
-            {thread?.replies.map((reply) => (
+            {thread?.replies.map(() => (
                 <Comment />
             ))}
         </section>
