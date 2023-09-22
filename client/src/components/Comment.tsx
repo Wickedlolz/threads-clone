@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 import { BsThreeDots } from 'react-icons/bs';
-import Actions from './Actions';
 import { IReplay } from '../interfaces/thread';
 import moment from 'moment';
+import LikeSvg from './LikeSvg';
 
 type CommentProps = {
     reply: IReplay;
@@ -12,6 +12,10 @@ type CommentProps = {
 const Comment = ({ reply }: CommentProps) => {
     const [liked, setLiked] = useState<boolean>(false);
     const passedTime = moment(reply?.createdAt).fromNow();
+
+    const handleLikeAndUnlike = () => {
+        setLiked((state) => !state);
+    };
 
     return (
         <>
@@ -32,8 +36,13 @@ const Comment = ({ reply }: CommentProps) => {
                         </div>
                     </div>
                     <p>{reply?.text}</p>
-                    {/* <Actions thread={{}} /> */}
-                    <p className="text-gray-500 text-sm">2 likes</p>
+                    <div className="flex gap-3 my-2">
+                        <LikeSvg
+                            liked={liked}
+                            handleLikeAndUnlike={handleLikeAndUnlike}
+                        />
+                        <p className="text-gray-500 text-sm">2 likes</p>
+                    </div>
                 </div>
             </div>
             <p className="w-full h-[1px] bg-gray-500"></p>
