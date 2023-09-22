@@ -115,12 +115,13 @@ router.put(
     }
 );
 
-router.post('/like', isAuth(), async (req, res) => {
-    const { threadId } = req.body;
+router.put('/like/:threadId', isAuth(), async (req, res) => {
+    const { threadId } = req.params;
     const userId = req.user.id;
 
     try {
         const thread = await threadService.like(threadId, userId);
+
         res.status(201).json(thread);
     } catch (error) {
         const errors = mapErrors(error);
@@ -128,7 +129,7 @@ router.post('/like', isAuth(), async (req, res) => {
     }
 });
 
-router.post(
+router.put(
     '/reply/:threadId',
     isAuth(),
     body('text').trim(),
