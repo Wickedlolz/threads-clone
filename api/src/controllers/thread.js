@@ -39,8 +39,8 @@ router.post(
         .notEmpty()
         .withMessage('Text is required!')
         .bail()
-        .isLength({ min: 10 })
-        .withMessage('Text must be at least 10 characters long')
+        .isLength({ min: 2 })
+        .withMessage('Text must be at least 2 characters long')
         .isLength({ max: 500 })
         .withMessage('Text must be less then 500 characters long'),
     async (req, res) => {
@@ -62,7 +62,7 @@ router.post(
     }
 );
 
-router.get('/:threadId', async (req, res) => {
+router.get('/thread/:threadId', async (req, res) => {
     const { threadId } = req.params;
 
     try {
