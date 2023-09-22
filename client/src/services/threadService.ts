@@ -9,6 +9,7 @@ const endpoints = {
     likeThreadById: (threadId: string) => `/api/v1/threads/like/${threadId}`,
     replyToThreadById: (threadId: string) =>
         `/api/v1/threads/reply/${threadId}`,
+    deleteThreadById: (threadId: string) => `/api/v1/threads/${threadId}`,
 };
 
 export const getFeed = () => {
@@ -35,4 +36,8 @@ export const replyToThreadById = (threadId: string, threadText: string) => {
     return requester.put<IThread>(endpoints.replyToThreadById(threadId), {
         text: threadText,
     });
+};
+
+export const deleteThreadById = (threadId: string) => {
+    return requester.del<IThread>(endpoints.deleteThreadById(threadId));
 };
