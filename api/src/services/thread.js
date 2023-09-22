@@ -188,6 +188,13 @@ exports.replyById = async function (
 };
 
 exports.deleteById = async function (threadId) {
+    const thread = await Thread.findById(threadId);
+
+    if (thread.img) {
+        const imgId = thread.img.split('/').pop().split('.')[0];
+        await cloudinary.uploader.destroy(imgId);
+    }
+
     const deletedThread = await Thread.findByIdAndRemove(threadId);
 
     return deletedThread;
