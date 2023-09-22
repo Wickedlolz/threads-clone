@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Dispatch, useState } from 'react';
 import { IThread } from '../interfaces/thread';
 import { useAppDispatch, useAppSelector } from '../store';
 import { toast } from 'react-toastify';
@@ -13,9 +13,10 @@ import ReplyModal from './ReplyModal';
 
 type ActionsProps = {
     thread: IThread | null;
+    setThread?: Dispatch<React.SetStateAction<IThread | null>>;
 };
 
-const Actions = ({ thread }: ActionsProps) => {
+const Actions = ({ thread, setThread }: ActionsProps) => {
     const user = useAppSelector((state) => state.auth.user);
     const dispatch = useAppDispatch();
     const [threadData, setThreadData] = useState<IThread | null>(thread);
@@ -71,6 +72,7 @@ const Actions = ({ thread }: ActionsProps) => {
                 <ReplyModal
                     thread={threadData}
                     setOpenReplyModal={setOpenReplyModal}
+                    setThread={setThread}
                 />
             )}
         </div>

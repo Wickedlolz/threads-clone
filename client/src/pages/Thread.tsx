@@ -88,7 +88,7 @@ const Thread = () => {
                 </div>
             )}
             <div className="flex gap-3 my-3">
-                <Actions thread={thread} />
+                <Actions thread={thread} setThread={setThread} />
             </div>
 
             <p className="w-full h-[1px] bg-gray-500 my-4"></p>

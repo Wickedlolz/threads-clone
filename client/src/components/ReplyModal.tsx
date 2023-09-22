@@ -10,9 +10,14 @@ import Spinner from './Spinner';
 type ReplyModalProps = {
     thread: IThread | null;
     setOpenReplyModal: Dispatch<React.SetStateAction<boolean>>;
+    setThread: Dispatch<React.SetStateAction<IThread | null>> | undefined;
 };
 
-const ReplyModal = ({ thread, setOpenReplyModal }: ReplyModalProps) => {
+const ReplyModal = ({
+    thread,
+    setOpenReplyModal,
+    setThread,
+}: ReplyModalProps) => {
     const dispatch = useAppDispatch();
     const [replyText, setReplyText] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -32,7 +37,12 @@ const ReplyModal = ({ thread, setOpenReplyModal }: ReplyModalProps) => {
         threadService
             .replyToThreadById(thread!._id, replyText)
             .then((thread) => {
-                dispatch(updateThread(thread));
+                if (setThread) {
+                    setThread(thread);
+                } else {
+                    dispatch(updateThread(thread));
+                }
+
                 toast.success('Reply successfully.');
                 setOpenReplyModal(false);
             })
