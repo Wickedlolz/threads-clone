@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { MouseEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { IThread } from '../interfaces/thread';
 import moment from 'moment';
@@ -14,7 +14,6 @@ type UserThreadType = {
 
 const UserThread = ({ thread }: UserThreadType) => {
     const navigate = useNavigate();
-    const [liked, setLiked] = useState<boolean>(false);
     const passedTime = moment(thread.createdAt).fromNow();
 
     const navigateToUserProfile = (event: MouseEvent<HTMLImageElement>) => {
@@ -95,16 +94,7 @@ const UserThread = ({ thread }: UserThreadType) => {
                         </div>
                     )}
                     <div className="flex gap-3 my-2">
-                        <Actions liked={liked} setLiked={setLiked} />
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <p className="text-gray-500 font-sm">
-                            {thread.replies.length} replies
-                        </p>
-                        <div className="w-0.5 h-0.5 rounded-full bg-gray-500"></div>
-                        <p className="text-gray-500 font-sm">
-                            {thread.likes.length} likes
-                        </p>
+                        <Actions thread={thread} />
                     </div>
                 </div>
             </div>
