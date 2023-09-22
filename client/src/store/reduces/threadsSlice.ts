@@ -22,6 +22,18 @@ export const threadsSlice = createSlice({
         setThreads: (state, action) => {
             state.feed = action.payload;
         },
+        updateThread: (state, action) => {
+            const thread = state.feed?.find(
+                (thread) => thread._id === action.payload._id
+            );
+
+            if (thread) {
+                const threadIndex = state.feed?.findIndex(
+                    (thread) => thread._id === action.payload._id
+                );
+                state.feed![threadIndex!] = action.payload;
+            }
+        },
         clearThreads: (state) => {
             state.feed = null;
         },
@@ -33,6 +45,6 @@ export const threadsSlice = createSlice({
     },
 });
 
-export const { setThreads, clearThreads } = threadsSlice.actions;
+export const { setThreads, updateThread, clearThreads } = threadsSlice.actions;
 
 export default threadsSlice.reducer;
