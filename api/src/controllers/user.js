@@ -10,10 +10,6 @@ router.get('/:username', async (req, res) => {
     try {
         const user = await userService.getUserByUsername(username);
 
-        if (!user) {
-            res.json({ message: 'User not found' });
-        }
-
         const result = {
             email: user.email,
             _id: user._id,
