@@ -11,10 +11,12 @@ export interface IThread {
 }
 
 export interface IReplay {
+    _id: string;
     userId: string;
     text: string;
     userProfilePic: string;
     username: string;
+    createdAt: string;
 }
 
 export interface IPostedBy {
