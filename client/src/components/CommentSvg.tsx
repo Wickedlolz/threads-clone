@@ -1,26 +1,10 @@
-import { MouseEvent } from 'react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { closeModal, showModal } from '../store/reduces/replyModalSlice';
+import { Dispatch } from 'react';
 
 type CommentSvgProps = {
-    replyTo: string | undefined;
-    threadId: string | undefined;
+    setOpenReplyModal: Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CommentSvg = ({ replyTo, threadId }: CommentSvgProps) => {
-    const replyModal = useAppSelector((state) => state.replyModal);
-    const dispatch = useAppDispatch();
-
-    const onOpen = (event: MouseEvent) => {
-        event.preventDefault();
-
-        if (replyModal.open) {
-            dispatch(closeModal());
-        } else {
-            dispatch(showModal({ open: !replyModal.open, replyTo, threadId }));
-        }
-    };
-
+const CommentSvg = ({ setOpenReplyModal }: CommentSvgProps) => {
     return (
         <svg
             className="cursor-pointer"
@@ -31,7 +15,7 @@ const CommentSvg = ({ replyTo, threadId }: CommentSvgProps) => {
             role="img"
             viewBox="0 0 24 24"
             width="20"
-            onClick={onOpen}
+            onClick={() => setOpenReplyModal((state) => !state)}
         >
             <title>Comment</title>
             <path
