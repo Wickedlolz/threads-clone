@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { useState } from 'react';
 import { IThread } from '../interfaces/thread';
 import { useAppDispatch, useAppSelector } from '../store';
 import { toast } from 'react-toastify';
@@ -9,6 +9,7 @@ import ShareSvg from './ShareSvg';
 import CommentSvg from './CommentSvg';
 import LikeSvg from './LikeSvg';
 import { updateThread } from '../store/reduces/threadsSlice';
+import ReplyModal from './ReplyModal';
 
 type ActionsProps = {
     thread: IThread | null;
@@ -18,12 +19,11 @@ const Actions = ({ thread }: ActionsProps) => {
     const user = useAppSelector((state) => state.auth.user);
     const dispatch = useAppDispatch();
     const [threadData, setThreadData] = useState<IThread | null>(thread);
+    const [openReplyModal, setOpenReplyModal] = useState<boolean>(false);
     const liked: boolean = thread?.likes.includes(user?._id || '') || false;
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const handleLikeAndUnlike = (event: MouseEvent) => {
-        event.preventDefault();
-
+    const handleLikeAndUnlike = () => {
         if (isLoading) {
             return;
         }
@@ -53,10 +53,7 @@ const Actions = ({ thread }: ActionsProps) => {
                     liked={liked}
                     handleLikeAndUnlike={handleLikeAndUnlike}
                 />
-                <CommentSvg
-                    replyTo={threadData?.postedBy.username}
-                    threadId={threadData?._id}
-                />
+                <CommentSvg setOpenReplyModal={setOpenReplyModal} />
                 <RepostSvg />
                 <ShareSvg />
             </div>
@@ -69,6 +66,13 @@ const Actions = ({ thread }: ActionsProps) => {
                     {thread?.likes.length} likes
                 </p>
             </div>
+
+            {openReplyModal && (
+                <ReplyModal
+                    thread={threadData}
+                    setOpenReplyModal={setOpenReplyModal}
+                />
+            )}
         </div>
     );
 };
