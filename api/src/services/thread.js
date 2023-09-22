@@ -117,7 +117,7 @@ exports.updateById = async function (threadId, text, img) {
 };
 
 exports.like = async function (threadId, userId) {
-    const thread = await Thread.findById(threadId);
+    const thread = await Thread.findById(threadId).populate('postedBy');
     const isLiked = thread.likes.includes(userId);
 
     if (isLiked) {
@@ -128,7 +128,23 @@ exports.like = async function (threadId, userId) {
 
     await thread.save();
 
-    return thread;
+    const result = {
+        ...thread._doc,
+        postedBy: {
+            createdAt: thread.postedBy.createdAt,
+            email: thread.postedBy.email,
+            updatedAt: thread.postedBy.updatedAt,
+            _id: thread.postedBy._id,
+            name: thread.postedBy.name,
+            username: thread.postedBy.username,
+            photoURL: thread.postedBy.photoURL,
+            followers: thread.postedBy.followers,
+            following: thread.postedBy.following,
+            bio: thread.postedBy.bio,
+        },
+    };
+
+    return result;
 };
 
 exports.replyById = async function (
@@ -138,15 +154,37 @@ exports.replyById = async function (
     username,
     text
 ) {
-    const thread = await Thread.findById(threadId);
+    const thread = await Thread.findById(threadId).populate('postedBy');
 
-    const reply = { userId, userProfilePic: profilePic, username, text };
+    const reply = {
+        userId,
+        userProfilePic: profilePic,
+        username,
+        text,
+        createdAt: new Date().toLocaleString(),
+    };
 
     thread.replies.push(reply);
 
     await thread.save();
 
-    return thread;
+    const result = {
+        ...thread._doc,
+        postedBy: {
+            createdAt: thread.postedBy.createdAt,
+            email: thread.postedBy.email,
+            updatedAt: thread.postedBy.updatedAt,
+            _id: thread.postedBy._id,
+            name: thread.postedBy.name,
+            username: thread.postedBy.username,
+            photoURL: thread.postedBy.photoURL,
+            followers: thread.postedBy.followers,
+            following: thread.postedBy.following,
+            bio: thread.postedBy.bio,
+        },
+    };
+
+    return result;
 };
 
 exports.deleteById = async function (threadId) {
