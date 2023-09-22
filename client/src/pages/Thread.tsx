@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useAppSelector } from '../store';
 import { threadService } from '../services';
 import { toast } from 'react-toastify';
 import { IThread } from '../interfaces/thread';
@@ -7,14 +8,16 @@ import moment from 'moment';
 
 import VerifiedBadge from '../assets/verified_badge.svg';
 import { BsThreeDots } from 'react-icons/bs';
+import { AiOutlineDelete } from 'react-icons/ai';
 import Actions from '../components/Actions';
 import Comment from '../components/Comment';
 import Spinner from '../components/Spinner';
-import { useAppSelector } from '../store';
 
 const Thread = () => {
     const { threadId } = useParams();
+    const user = useAppSelector((state) => state.auth.user);
     const feed = useAppSelector((state) => state.threads.feed);
+    const navigate = useNavigate();
     const [thread, setThread] = useState<IThread | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const passedTime = moment(thread?.createdAt).fromNow();
@@ -36,6 +39,22 @@ const Thread = () => {
                 .finally(() => setIsLoading(false));
         }
     }, [threadId, feed]);
+
+    const handleDeleteThread = () => {
+        if (isLoading) {
+            return;
+        }
+
+        setIsLoading(true);
+        threadService
+            .deleteThreadById(thread!._id)
+            .then(() => {
+                navigate('/profile/' + user?.username);
+                toast.success('Successfully deleted.');
+            })
+            .catch((error) => toast.error(error.message))
+            .finally(() => setIsLoading(false));
+    };
 
     if (isLoading) {
         return (
@@ -74,7 +93,14 @@ const Thread = () => {
                     <p className="font-sm text-xs w-24 text-right text-gray-400">
                         {passedTime}
                     </p>
-                    <BsThreeDots />
+                    {user?._id === thread?.postedBy?._id ? (
+                        <AiOutlineDelete
+                            onClick={handleDeleteThread}
+                            className="cursor-pointer"
+                        />
+                    ) : (
+                        <BsThreeDots />
+                    )}
                 </div>
             </div>
             <p className="my-3">{thread?.text}</p>
