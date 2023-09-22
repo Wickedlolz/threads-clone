@@ -22,7 +22,7 @@ const UserThread = ({ thread }: UserThreadType) => {
     };
 
     return (
-        <Link to={`/${thread.postedBy.username}/thread/${thread._id}`}>
+        <>
             <div className="flex gap-3 mb-4 py-4">
                 <div className="flex flex-col items-center">
                     <img
@@ -36,23 +36,23 @@ const UserThread = ({ thread }: UserThreadType) => {
                         {thread.replies.length === 0 && (
                             <FaRegFaceFrownOpen className="mx-auto text-yellow-300" />
                         )}
-                        {thread.replies[0]?.userProfilePic && (
+                        {thread?.replies[0]?.userProfilePic && (
                             <img
-                                className="absolute top-0 left-4 w-6 h-6 rounded-full"
+                                className="absolute top-0 left-3 w-6 h-6 rounded-full"
                                 src={thread.replies[0].userProfilePic}
                                 alt={thread.replies[0].username}
                             />
                         )}
-                        {thread.replies[1]?.userProfilePic && (
+                        {thread?.replies[1]?.userProfilePic && (
                             <img
-                                className="absolute top-0 left-4 w-6 h-6 rounded-full"
+                                className="absolute bottom-0 right-[-5px] w-6 h-6 rounded-full"
                                 src={thread.replies[1].userProfilePic}
                                 alt={thread.replies[1].username}
                             />
                         )}
-                        {thread.replies[2]?.userProfilePic && (
+                        {thread?.replies[2]?.userProfilePic && (
                             <img
-                                className="absolute top-0 left-4 w-6 h-6 rounded-full"
+                                className="absolute bottom-0 left-0 w-6 h-6 rounded-full"
                                 src={thread.replies[2].userProfilePic}
                                 alt={thread.replies[2].username}
                             />
@@ -60,45 +60,49 @@ const UserThread = ({ thread }: UserThreadType) => {
                     </div>
                 </div>
                 <div className="flex-1 flex-col gap-2">
-                    <div className="flex justify-between w-full">
-                        <div className="flex w-full items-center gap-1">
-                            <p
-                                className="font-sm font-bold"
-                                onClick={navigateToUserProfile}
-                            >
-                                {thread.postedBy.username}
-                            </p>
-                            <img
-                                className="w-4 h-4 object-cover"
-                                src={VerifiedBadge}
-                                alt="verified badge"
-                                width={16}
-                                height={16}
-                            />
+                    <Link
+                        to={`/${thread.postedBy.username}/thread/${thread._id}`}
+                    >
+                        <div className="flex justify-between w-full">
+                            <div className="flex w-full items-center gap-1">
+                                <p
+                                    className="font-sm font-bold"
+                                    onClick={navigateToUserProfile}
+                                >
+                                    {thread.postedBy.username}
+                                </p>
+                                <img
+                                    className="w-4 h-4 object-cover"
+                                    src={VerifiedBadge}
+                                    alt="verified badge"
+                                    width={16}
+                                    height={16}
+                                />
+                            </div>
+                            <div className="flex items-center justify-between gap-3">
+                                <p className="font-sm text-xs w-24 text-right text-gray-400">
+                                    {passedTime}
+                                </p>
+                                <BsThreeDots />
+                            </div>
                         </div>
-                        <div className="flex items-center justify-between gap-3">
-                            <p className="font-sm text-xs w-24 text-right text-gray-400">
-                                {passedTime}
-                            </p>
-                            <BsThreeDots />
-                        </div>
-                    </div>
-                    <p className="font-sm">{thread.text}</p>
-                    {thread.img && (
-                        <div className="rounded-md overflow-hidden border-[1px] border-gray-400">
-                            <img
-                                className="w-full"
-                                src={thread.img}
-                                alt={thread.text}
-                            />
-                        </div>
-                    )}
+                        <p className="font-sm">{thread.text}</p>
+                        {thread.img && (
+                            <div className="rounded-md overflow-hidden border-[1px] border-gray-400">
+                                <img
+                                    className="w-full"
+                                    src={thread.img}
+                                    alt={thread.text}
+                                />
+                            </div>
+                        )}
+                    </Link>
                     <div className="flex gap-3 my-2">
                         <Actions thread={thread} />
                     </div>
                 </div>
             </div>
-        </Link>
+        </>
     );
 };
 
