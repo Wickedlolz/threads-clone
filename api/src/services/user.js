@@ -3,6 +3,10 @@ const User = require('../models/User');
 exports.getUserByUsername = async (username) => {
     const user = await User.findOne({ username });
 
+    if (!user) {
+        throw { message: 'User not found' };
+    }
+
     return user;
 };
 
@@ -11,7 +15,7 @@ exports.followUnfollow = async (userId, currentUserId) => {
     const currentUser = await User.findById(currentUserId);
 
     if (!userToModify || !currentUser) {
-        return { error: 'User not found' };
+        throw { message: 'User not found' };
     }
 
     const isFollowing = currentUser.following.includes(userId);
