@@ -40,27 +40,35 @@ const Header = () => {
     return (
         <>
             {user ? (
-                <header className='flex justify-between px-3 sm:justify-evenly mt-6 mb-12 items-center'>
-                    <Link to='/' className='text-white'>
-                        <AiFillHome className='text-white' size={28} />
+                <header className="flex justify-between px-3 sm:justify-evenly mt-6 mb-12 items-center">
+                    <Link to="/" className="text-white">
+                        <AiFillHome className="text-white" size={28} />
                     </Link>
 
                     <img
-                        className='w-7 h-7 object-cover'
+                        className="w-7 h-7 object-cover"
                         src={DarkLogo}
-                        alt='threads logo'
+                        alt="threads logo"
                         width={36}
                         height={36}
                     />
 
-                    <div className='flex items-center gap-4 text-white'>
+                    <div className="flex items-center gap-4 text-white">
                         <Link to={`/profile/${user?.username}`}>
-                            <RxAvatar size={28} />
+                            {user.photoURL ? (
+                                <img
+                                    className="w-7 h-7 rounded-full object-cover"
+                                    src={user.photoURL}
+                                    alt={user.name}
+                                />
+                            ) : (
+                                <RxAvatar size={28} />
+                            )}
                         </Link>
                         <Link to={`/chat`}>
                             <BsFillChatQuoteFill size={24} />
                         </Link>
-                        <button className='text-xs' onClick={handleLogout}>
+                        <button className="text-xs" onClick={handleLogout}>
                             <FiLogOut size={24} />
                         </button>
                     </div>
