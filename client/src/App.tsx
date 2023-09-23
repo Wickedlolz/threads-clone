@@ -11,6 +11,7 @@ import Spinner from './components/Spinner';
 
 const User = lazy(() => import('./pages/User'));
 const Thread = lazy(() => import('./pages/Thread'));
+const Chat = lazy(() => import('./pages/Chat'));
 const Login = lazy(() => import('./pages/Login'));
 const SignUp = lazy(() => import('./pages/SignUp'));
 const UpdateProfile = lazy(() => import('./pages/UpdateProfile'));
@@ -34,6 +35,14 @@ const App = () => {
                         element={
                             <Suspense fallback={<Spinner />}>
                                 <UpdateProfile />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/chat"
+                        element={
+                            <Suspense fallback={<Spinner />}>
+                                <Chat />
                             </Suspense>
                         }
                     />

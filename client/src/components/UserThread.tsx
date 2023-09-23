@@ -48,7 +48,7 @@ const UserThread = ({ thread }: UserThreadType) => {
             <div className="flex gap-3 mb-4 py-4">
                 <div className="flex flex-col items-center">
                     <img
-                        className="w-12 h-12 rounded-full cursor-pointer"
+                        className="w-12 h-12 rounded-full cursor-pointer object-cover"
                         src={thread.postedBy.photoURL}
                         alt="user avatar"
                         onClick={navigateToUserProfile}
