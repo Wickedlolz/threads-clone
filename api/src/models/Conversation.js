@@ -7,13 +7,14 @@ const {
 
 const conversationSchema = new Schema(
     {
-        comment: {
-            type: String,
-            required: true,
-        },
-        userId: {
-            type: ObjectId,
-            ref: 'User',
+        participants: [{ type: ObjectId, ref: 'User' }],
+        lastMessage: {
+            text: String,
+            sender: { type: ObjectId, ref: 'User' },
+            seen: {
+                type: Boolean,
+                default: false,
+            },
         },
     },
     { timestamps: true }
