@@ -1,6 +1,7 @@
 /* eslint-disable quotes */
 const User = require('../models/User');
 const TokenBlacklist = require('../models/TokenBlacklist');
+const Thread = require('../models/Thread');
 const jwt = require('jsonwebtoken');
 const { compare, hash } = require('bcrypt');
 const { v2: cloudinary } = require('cloudinary');
@@ -107,6 +108,17 @@ exports.updateProfile = async function (userId, userData) {
     user.bio = userData.bio || user.bio;
 
     await user.save();
+
+    await Thread.updateMany(
+        { 'replies.userId': userId },
+        {
+            $set: {
+                'replies.$[reply].username': user.username,
+                'replies.$[reply].userProfilePic': user.profilePic,
+            },
+        },
+        { arrayFilters: [{ 'reply.userId': userId }] }
+    );
 
     return user;
 };
