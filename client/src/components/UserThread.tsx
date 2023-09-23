@@ -1,8 +1,7 @@
-import { Dispatch, MouseEvent, useState } from 'react';
+import { MouseEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { IThread } from '../interfaces/thread';
-import { threadService } from '../services';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 
@@ -11,18 +10,18 @@ import { BsThreeDots } from 'react-icons/bs';
 import { FaRegFaceFrownOpen } from 'react-icons/fa6';
 import { AiOutlineDelete } from 'react-icons/ai';
 import VerifiedBadge from '../assets/verified_badge.svg';
+import { deleteThreadById } from '../store/reduces/threadsSlice';
 
 type UserThreadType = {
     thread: IThread;
-    threads?: IThread[];
-    setThreads?: Dispatch<React.SetStateAction<IThread[]>>;
 };
 
-const UserThread = ({ thread, threads, setThreads }: UserThreadType) => {
+const UserThread = ({ thread }: UserThreadType) => {
     const user = useAppSelector((state) => state.auth.user);
+    const updating = useAppSelector((state) => state.threads.updating);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const passedTime = moment(thread.createdAt).fromNow();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const navigateToUserProfile = (event: MouseEvent<HTMLImageElement>) => {
         event.preventDefault();
@@ -32,25 +31,16 @@ const UserThread = ({ thread, threads, setThreads }: UserThreadType) => {
     const handleDeleteThread = (event: MouseEvent) => {
         event.preventDefault();
 
-        if (isLoading) {
+        if (updating) {
             return;
         }
 
-        setIsLoading(true);
-        threadService
-            .deleteThreadById(thread._id)
-            .then((deletedThread) => {
-                if (threads && setThreads) {
-                    const filteredThreads = threads.filter(
-                        (thread) => thread._id !== deletedThread._id
-                    );
-                    setThreads(filteredThreads);
-                }
-
+        dispatch(deleteThreadById(thread._id))
+            .unwrap()
+            .then(() => {
                 toast.success('Successfully deleted.');
             })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setIsLoading(false));
+            .catch((error) => toast.error(error.message));
     };
 
     return (
@@ -58,7 +48,7 @@ const UserThread = ({ thread, threads, setThreads }: UserThreadType) => {
             <div className="flex gap-3 mb-4 py-4">
                 <div className="flex flex-col items-center">
                     <img
-                        className="w-12 h-12 rounded-full"
+                        className="w-12 h-12 rounded-full cursor-pointer"
                         src={thread.postedBy.photoURL}
                         alt="user avatar"
                         onClick={navigateToUserProfile}
@@ -126,7 +116,7 @@ const UserThread = ({ thread, threads, setThreads }: UserThreadType) => {
                         </div>
                         <p className="font-sm">{thread.text}</p>
                         {thread.img && (
-                            <div className="rounded-md overflow-hidden border-[1px] border-gray-400">
+                            <div className="rounded-md overflow-hidden border-[1px] mt-2 border-gray-400">
                                 <img
                                     className="w-full"
                                     src={thread.img}

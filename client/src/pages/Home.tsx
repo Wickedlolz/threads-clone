@@ -8,15 +8,13 @@ const Home = () => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (feed === null) {
-            dispatch(loadFeed());
-        }
-    }, [dispatch, feed]);
+        dispatch(loadFeed());
+    }, [dispatch]);
 
     return (
         <section>
             {feed?.length === 0 && (
-                <h1 className='text-center'>
+                <h1 className="text-center">
                     Follow some users to see the feed
                 </h1>
             )}

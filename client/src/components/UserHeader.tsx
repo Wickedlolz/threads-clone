@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
+import { followUnfollowUser, updateUser } from '../store/reduces/threadsSlice';
 import { toast } from 'react-toastify';
-import { userService } from '../services';
 import { IUser } from '../interfaces/user';
 
 import { AiOutlineInstagram } from 'react-icons/ai';
@@ -15,11 +15,12 @@ type UserHeaderProps = {
 
 const UserHeader = ({ user }: UserHeaderProps) => {
     const authUser = useAppSelector((state) => state.auth.user);
+    const updating = useAppSelector((state) => state.threads.updating);
+    const dispatch = useAppDispatch();
     const [openMenu, setOpenMenu] = useState<boolean>(false);
     const [following, setFollowing] = useState<boolean>(
         user.followers.includes(authUser!._id)
     );
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     /**
      * Copies the current URL to the clipboard and displays a success message.
@@ -50,25 +51,31 @@ const UserHeader = ({ user }: UserHeaderProps) => {
      * @throws {Error} If there's an error during the follow/unfollow operation.
      */
     const handleFollowUnfollow = (): void => {
-        setIsLoading(true);
-        userService
-            .followUnfollow(user._id)
+        dispatch(followUnfollowUser(user._id))
+            .unwrap()
             .then(() => {
                 if (following) {
                     toast.success(`Unfollowing ${user.name}`);
-                    user.followers = user.followers.filter(
-                        (userId) => userId !== authUser!._id
-                    );
+                    const updatedUser = {
+                        ...user,
+                        followers: [...user.followers].filter(
+                            (userId) => userId !== authUser?._id
+                        ),
+                    };
+                    dispatch(updateUser(updatedUser));
 
                     setFollowing(false);
                 } else {
-                    toast.success(`Following ${user.name}`);
-                    user.followers.push(authUser!._id);
+                    const updatedUser = {
+                        ...user,
+                        followers: [...user.followers, authUser?._id],
+                    };
+                    dispatch(updateUser(updatedUser));
                     setFollowing(true);
+                    toast.success(`Following ${user.name}`);
                 }
             })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setIsLoading(false));
+            .catch((error) => toast.error(error.message));
     };
 
     return (
@@ -98,11 +105,11 @@ const UserHeader = ({ user }: UserHeaderProps) => {
                 </Link>
             ) : (
                 <button
-                    disabled={isLoading}
+                    disabled={updating}
                     className="primaryBtn w-28"
                     onClick={handleFollowUnfollow}
                 >
-                    {isLoading && <Spinner isSmall />}
+                    {updating && <Spinner isSmall />}
                     {following ? 'Unfollow' : 'Follow'}
                 </button>
             )}

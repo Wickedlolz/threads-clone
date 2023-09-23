@@ -1,70 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../store';
-import { threadService, userService } from '../services';
-import { IUser } from '../interfaces/user';
-import { IThread } from '../interfaces/thread';
+import { useAppDispatch, useAppSelector } from '../store';
 import { toast } from 'react-toastify';
 
 import UserHeader from '../components/UserHeader';
 import Spinner from '../components/Spinner';
 import UserThread from '../components/UserThread';
+import { loadUserThreads } from '../store/reduces/threadsSlice';
 
 const User = () => {
     const { username } = useParams();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const user = useAppSelector((state) => state.auth.user);
-    const [userData, setUserData] = useState<IUser | null>(null);
-    const [threads, setThreads] = useState<IThread[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { loading, feed, user } = useAppSelector((state) => state.threads);
 
     useEffect(() => {
-        setIsLoading(true);
-        if (user?.username !== username) {
-            Promise.all([
-                userService.getUserByUsername(username!),
-                threadService.getUserThreads(username!),
-            ])
-                .then(([userData, threads]) => {
-                    setUserData(userData);
-                    setThreads(threads);
-                })
-                .catch((error) => {
-                    toast.error(error.message);
-                    navigate('/');
-                })
-                .finally(() => setIsLoading(false));
-        } else {
-            setUserData(user);
-            threadService
-                .getUserThreads(user!.username)
-                .then((threads) => {
-                    setThreads(threads);
-                })
-                .catch((error) => {
-                    toast.error(error.mesage);
-                    navigate('/');
-                })
-                .finally(() => setIsLoading(false));
-        }
-    }, [user?.username, username, user, navigate]);
+        dispatch(loadUserThreads(username!))
+            .unwrap()
+            .catch((error) => {
+                toast.error(error.message);
+                navigate('/');
+            });
+    }, [dispatch, navigate, username]);
 
     return (
         <section>
-            {!isLoading && userData ? (
+            {!loading && user ? (
                 <>
-                    <UserHeader user={userData} />
-                    {threads.length === 0 && (
+                    <UserHeader user={user} />
+                    {feed && feed.length === 0 && (
                         <h1 className="text-center">User has no threads.</h1>
                     )}
-                    {threads.length > 0 &&
-                        threads.map((thread) => (
-                            <UserThread
-                                key={thread._id}
-                                thread={thread}
-                                threads={threads}
-                                setThreads={setThreads}
-                            />
+                    {feed &&
+                        feed.length > 0 &&
+                        feed.map((thread) => (
+                            <UserThread key={thread._id} thread={thread} />
                         ))}
                 </>
             ) : (

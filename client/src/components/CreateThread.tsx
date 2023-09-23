@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../store';
+import { createThread, updateThread } from '../store/reduces/threadsSlice';
 import usePreviewImage from '../hooks/usePreviewImage';
-import { threadService } from '../services';
 import { toast } from 'react-toastify';
 
 import { AiOutlinePlus } from 'react-icons/ai';
@@ -11,13 +12,15 @@ import Spinner from './Spinner';
 const MAX_CHAR = 500;
 
 const CreateThread = () => {
+    const dispatch = useAppDispatch();
+    const user = useAppSelector((state) => state.auth.user);
+    const updating = useAppSelector((state) => state.threads.updating);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const imageRef = useRef<HTMLInputElement | null>(null);
     const { handleImageChange, imageUrl, setImageUrl } = usePreviewImage();
     const [text, setText] = useState<string>('');
     const [error, setError] = useState<boolean>(false);
     const [remainingChar, setRemainingChar] = useState<number>(MAX_CHAR);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     /**
      * Event handler for text area input change.
@@ -41,6 +44,14 @@ const CreateThread = () => {
         }
     };
 
+    /**
+     * Handles the creation of a thread by preventing the default form event, handling potential errors,
+     * and dispatching relevant actions.
+     *
+     * @param {FormEvent<HTMLFormElement>} event - The form event triggering the thread creation.
+     *
+     * @returns {void}
+     */
     const handleCreteThread = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError(false);
@@ -50,19 +61,16 @@ const CreateThread = () => {
             return;
         }
 
-        setIsLoading(true);
-
-        threadService
-            .createThread(text, imageUrl as string)
+        dispatch(createThread({ text, imageUrl: imageUrl as string }))
+            .unwrap()
             .then((thread) => {
-                console.log('thread created: ', thread);
+                dispatch(updateThread({ ...thread, postedBy: user }));
                 setOpenModal(false);
                 setText('');
                 setImageUrl(null);
                 toast.success('Thread created successfully.');
             })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setIsLoading(false));
+            .catch((error) => toast.error(error.message));
     };
 
     return (
@@ -164,7 +172,7 @@ const CreateThread = () => {
                                     type="submit"
                                     className="primaryBtn w-full"
                                 >
-                                    {isLoading && <Spinner isSmall />}
+                                    {updating && <Spinner isSmall />}
                                     Create
                                 </button>
                             </form>

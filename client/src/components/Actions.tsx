@@ -1,4 +1,4 @@
-import { Dispatch, useState } from 'react';
+import { useState } from 'react';
 import { IThread } from '../interfaces/thread';
 import { useAppDispatch, useAppSelector } from '../store';
 import { toast } from 'react-toastify';
@@ -13,17 +13,21 @@ import ReplyModal from './ReplyModal';
 
 type ActionsProps = {
     thread: IThread | null;
-    setThread?: Dispatch<React.SetStateAction<IThread | null>>;
 };
 
-const Actions = ({ thread, setThread }: ActionsProps) => {
+const Actions = ({ thread }: ActionsProps) => {
     const user = useAppSelector((state) => state.auth.user);
     const dispatch = useAppDispatch();
-    const [threadData, setThreadData] = useState<IThread | null>(thread);
     const [openReplyModal, setOpenReplyModal] = useState<boolean>(false);
     const liked: boolean = thread?.likes.includes(user?._id || '') || false;
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    /**
+     * Handles the like and unlike functionality for a thread,
+     * updating the thread's like status and notifying the user of actions.
+     *
+     * @returns {void}
+     */
     const handleLikeAndUnlike = () => {
         if (isLoading) {
             return;
@@ -40,7 +44,6 @@ const Actions = ({ thread, setThread }: ActionsProps) => {
         threadService
             .likeUnlikeThreadById(thread!._id)
             .then((data) => {
-                setThreadData(data);
                 dispatch(updateThread(data));
             })
             .catch((error) => toast.error(error.message))
@@ -70,9 +73,8 @@ const Actions = ({ thread, setThread }: ActionsProps) => {
 
             {openReplyModal && (
                 <ReplyModal
-                    thread={threadData}
+                    thread={thread}
                     setOpenReplyModal={setOpenReplyModal}
-                    setThread={setThread}
                 />
             )}
         </div>

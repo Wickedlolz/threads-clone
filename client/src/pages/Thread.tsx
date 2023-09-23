@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useAppSelector } from '../store';
-import { threadService } from '../services';
+import { useAppDispatch, useAppSelector } from '../store';
+import {
+    deleteThreadById,
+    loadThreadById,
+} from '../store/reduces/threadsSlice';
 import { toast } from 'react-toastify';
-import { IThread } from '../interfaces/thread';
 import moment from 'moment';
 
 import VerifiedBadge from '../assets/verified_badge.svg';
@@ -16,47 +18,38 @@ import Spinner from '../components/Spinner';
 const Thread = () => {
     const { threadId } = useParams();
     const user = useAppSelector((state) => state.auth.user);
-    const feed = useAppSelector((state) => state.threads.feed);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const [thread, setThread] = useState<IThread | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { thread, loading } = useAppSelector((state) => state.threads);
     const passedTime = moment(thread?.createdAt).fromNow();
 
     useEffect(() => {
-        setIsLoading(true);
-        const currentThread = feed?.find((thread) => thread?._id === threadId);
+        dispatch(loadThreadById(threadId!))
+            .unwrap()
+            .catch((error) => toast.error(error.message));
+    }, [threadId, dispatch]);
 
-        if (currentThread) {
-            setThread(currentThread);
-            setIsLoading(false);
-        } else {
-            threadService
-                .getThreadById(threadId!)
-                .then((thread) => {
-                    setThread(thread);
-                })
-                .catch((error) => toast.error(error.message))
-                .finally(() => setIsLoading(false));
-        }
-    }, [threadId, feed]);
-
+    /**
+     * Handles the deletion of a thread, dispatching a delete action and navigating
+     * to the user's profile upon success.
+     *
+     * @returns {void}
+     */
     const handleDeleteThread = () => {
-        if (isLoading) {
+        if (loading) {
             return;
         }
 
-        setIsLoading(true);
-        threadService
-            .deleteThreadById(thread!._id)
+        dispatch(deleteThreadById(threadId!))
+            .unwrap()
             .then(() => {
                 navigate('/profile/' + user?.username);
                 toast.success('Successfully deleted.');
             })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setIsLoading(false));
+            .catch((error) => toast.error(error.message));
     };
 
-    if (isLoading) {
+    if (loading) {
         return (
             <section>
                 <Spinner />
@@ -114,7 +107,7 @@ const Thread = () => {
                 </div>
             )}
             <div className="flex gap-3 my-3">
-                <Actions thread={thread} setThread={setThread} />
+                <Actions thread={thread} />
             </div>
 
             <p className="w-full h-[1px] bg-gray-500 my-4"></p>
