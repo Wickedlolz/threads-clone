@@ -40,3 +40,27 @@ exports.followUnfollow = async (userId, currentUserId) => {
         return { message: 'User followed successfully' };
     }
 };
+
+exports.getSuggestedUsers = async function (userId) {
+    const usersFollowedByYou = await User.findById(userId).select('following');
+
+    const users = await User.aggregate([
+        {
+            $match: {
+                _id: { $ne: userId },
+            },
+        },
+        {
+            $sample: { size: 10 },
+        },
+    ]);
+
+    const filteredUsers = users.filter(
+        (user) => !usersFollowedByYou.following.includes(user._id)
+    );
+    const suggestedUsers = filteredUsers.slice(0, 4);
+
+    suggestedUsers.forEach((user) => (user.password = null));
+
+    return suggestedUsers;
+};

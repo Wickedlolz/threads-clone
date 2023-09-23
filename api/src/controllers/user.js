@@ -49,4 +49,16 @@ router.post('/follow/:userId', isAuth(), async (req, res) => {
     }
 });
 
+router.get('/suggested', isAuth(), async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const suggestedUsers = await userService.getSuggestedUsers(userId);
+        res.json(suggestedUsers);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
 module.exports = router;
