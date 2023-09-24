@@ -6,11 +6,19 @@ import { messageService } from '../../services';
 export interface IConversationsInitialState {
     conversations: IConversation[] | null;
     selectedConversation: IConversation | null;
+    newMessageNotification: {
+        isNew: boolean;
+        conversationId: string | null;
+    };
 }
 
 const initialState: IConversationsInitialState = {
     conversations: null,
     selectedConversation: null,
+    newMessageNotification: {
+        isNew: false,
+        conversationId: null,
+    },
 };
 
 export const conversationSlice = createSlice({
@@ -41,6 +49,9 @@ export const conversationSlice = createSlice({
                 return conversation;
             });
         },
+        setNewMessageNotification: (state, action) => {
+            state.newMessageNotification = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(getConversations.fulfilled, (state, action) => {
@@ -58,6 +69,7 @@ export const {
     addConversation,
     updateConversations,
     selectConversation,
+    setNewMessageNotification,
 } = conversationSlice.actions;
 
 export default conversationSlice.reducer;
