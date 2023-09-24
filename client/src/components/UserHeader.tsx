@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store';
-import { followUnfollowUser, updateUser } from '../store/reduces/threadsSlice';
+import { useAppSelector } from '../store';
+import useFollowUnfollow from '../hooks/useFollowUnfollow';
 import { toast } from 'react-toastify';
 import { IUser } from '../interfaces/user';
 
@@ -16,11 +16,8 @@ type UserHeaderProps = {
 const UserHeader = ({ user }: UserHeaderProps) => {
     const authUser = useAppSelector((state) => state.auth.user);
     const updating = useAppSelector((state) => state.threads.updating);
-    const dispatch = useAppDispatch();
+    const { handleFollowUnfollow, following } = useFollowUnfollow(user);
     const [openMenu, setOpenMenu] = useState<boolean>(false);
-    const [following, setFollowing] = useState<boolean>(
-        user.followers.includes(authUser!._id)
-    );
 
     /**
      * Copies the current URL to the clipboard and displays a success message.
@@ -37,45 +34,6 @@ const UserHeader = ({ user }: UserHeaderProps) => {
             setOpenMenu(false);
             toast.success('Profile link copied.');
         });
-    };
-
-    /**
-     * Handles the logic for following or unfollowing a user.
-     *
-     * This function toggles the follow/unfollow status for a user by invoking
-     * the appropriate service method and updating the user's followers accordingly.
-     * It displays a success message upon successful follow or unfollow,
-     * and handles errors by displaying an error message.
-     *
-     * @returns {void}
-     * @throws {Error} If there's an error during the follow/unfollow operation.
-     */
-    const handleFollowUnfollow = (): void => {
-        dispatch(followUnfollowUser(user._id))
-            .unwrap()
-            .then(() => {
-                if (following) {
-                    toast.success(`Unfollowing ${user.name}`);
-                    const updatedUser = {
-                        ...user,
-                        followers: [...user.followers].filter(
-                            (userId) => userId !== authUser?._id
-                        ),
-                    };
-                    dispatch(updateUser(updatedUser));
-
-                    setFollowing(false);
-                } else {
-                    const updatedUser = {
-                        ...user,
-                        followers: [...user.followers, authUser?._id],
-                    };
-                    dispatch(updateUser(updatedUser));
-                    setFollowing(true);
-                    toast.success(`Following ${user.name}`);
-                }
-            })
-            .catch((error) => toast.error(error.message));
     };
 
     return (
