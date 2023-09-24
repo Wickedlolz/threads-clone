@@ -1,7 +1,8 @@
-import VerifiedBadge from '../assets/verified_badge.svg';
+import { useAppDispatch, useAppSelector } from '../store';
+import { selectConversation } from '../store/reduces/conversationSlice';
 import { IConversation } from '../interfaces/conversation';
-import { useAppSelector } from '../store';
 
+import VerifiedBadge from '../assets/verified_badge.svg';
 import { BsCheck2All, BsFillImageFill } from 'react-icons/bs';
 
 type ConversationProps = {
@@ -10,6 +11,7 @@ type ConversationProps = {
 };
 
 const Conversation = ({ conversation }: ConversationProps) => {
+    const dispatch = useAppDispatch();
     const user = conversation.participants[0];
     const currentUser = useAppSelector((state) => state.auth.user);
     const lastMessage = conversation.lastMessage;
@@ -24,6 +26,7 @@ const Conversation = ({ conversation }: ConversationProps) => {
                     ? 'bg-gray-600'
                     : ''
             } hover:cursor-pointer hover:bg-gray-600 hover:text-white`}
+            onClick={() => dispatch(selectConversation(conversation))}
         >
             <div>
                 <img
@@ -51,7 +54,7 @@ const Conversation = ({ conversation }: ConversationProps) => {
                             <BsCheck2All size={16} />
                         </div>
                     )}
-                    {lastMessage.text.length > 18
+                    {lastMessage?.text?.length > 18
                         ? lastMessage.text.substring(0, 18) + '...'
                         : lastMessage.text || <BsFillImageFill size={16} />}
                 </p>
