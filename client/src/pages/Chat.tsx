@@ -7,7 +7,7 @@ const Chat = () => {
         <section className="absolute left-[50%] w-full lg:w-[750px] p-0 translate-x-[-50%]">
             <div className="flex flex-col md:flex-row gap-4 mx-auto">
                 <div className="flex flex-30 gap-2 flex-col sm:max-w-[250px] md:max-w-full mx-auto">
-                    <p className="font-bold text-gray-500">
+                    <p className="font-bold text-gray-300">
                         Your Conversations
                     </p>
                     <form>
