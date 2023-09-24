@@ -86,16 +86,16 @@ const Chat = () => {
     };
 
     return (
-        <section className="absolute left-[50%] w-full lg:w-[750px] p-0 translate-x-[-50%]">
+        <section className="absolute left-[50%] w-full  p-0 translate-x-[-50%]">
             <div className="flex flex-col md:flex-row gap-4 mx-auto">
-                <div className="flex flex-30 gap-2 flex-col sm:max-w-[250px] md:max-w-full mx-auto">
+                <div className="flex gap-2 w-full flex-col sm:max-w-[30%]">
                     <p className="font-bold text-gray-300">
                         Your Conversations
                     </p>
                     <form onSubmit={handleConversationSearch}>
                         <div className="flex items-center gap-2">
                             <input
-                                className="p-1 text-black rounded-lg"
+                                className="p-1 text-black rounded-lg w-full"
                                 type="text"
                                 placeholder="Search for a user"
                                 value={userText}
@@ -123,7 +123,7 @@ const Chat = () => {
                     ))}
                 </div>
                 {!selectedConversation && (
-                    <div className="flex flex-70 rounded-lg p-2 flex-col items-center justify-center h-96">
+                    <div className="flex w-full sm:max-w-[70%] rounded-lg p-2 flex-col items-center justify-center h-96">
                         <GiConversation size={100} />
                         <p className="text-xl">
                             Select a conversation to start messaging
