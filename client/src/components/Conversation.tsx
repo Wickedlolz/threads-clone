@@ -1,18 +1,40 @@
 import VerifiedBadge from '../assets/verified_badge.svg';
+import { IConversation } from '../interfaces/conversation';
+import { useAppSelector } from '../store';
 
-const Conversation = () => {
+import { BsCheck2All, BsFillImageFill } from 'react-icons/bs';
+
+type ConversationProps = {
+    isOnline: boolean;
+    conversation: IConversation;
+};
+
+const Conversation = ({ conversation }: ConversationProps) => {
+    const user = conversation.participants[0];
+    const currentUser = useAppSelector((state) => state.auth.user);
+    const lastMessage = conversation.lastMessage;
+    const selectedConversation = useAppSelector(
+        (state) => state.conversations.selectedConversation
+    );
+
     return (
-        <div className="flex gap-4 rounded-lg items-center p-1 hover:cursor-pointer hover:bg-gray-600 hover:text-white">
+        <div
+            className={`flex gap-4 rounded-lg items-center p-1 ${
+                selectedConversation?._id === conversation._id
+                    ? 'bg-gray-600'
+                    : ''
+            } hover:cursor-pointer hover:bg-gray-600 hover:text-white`}
+        >
             <div>
                 <img
                     className="w-12 h-12 rounded-full cursor-pointer object-cover"
-                    src="https://images.unsplash.com/photo-1513462447748-c1d2dd474b1e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                    alt="asd"
+                    src={user?.photoURL}
+                    alt={user?.name}
                 />
             </div>
             <div className="flex flex-col font-medium">
                 <p className="font-bold flex items-center">
-                    johndoe{' '}
+                    {user?.username}{' '}
                     <img
                         className="w-4 h-4 ml-1"
                         src={VerifiedBadge}
@@ -20,7 +42,18 @@ const Conversation = () => {
                     />
                 </p>
                 <p className="flex font-medium items-center gap-1">
-                    Hello some message ...
+                    {currentUser?._id === lastMessage.sender && (
+                        <div
+                            className={`${
+                                lastMessage.seen ? 'text-blue-400' : ''
+                            }`}
+                        >
+                            <BsCheck2All size={16} />
+                        </div>
+                    )}
+                    {lastMessage.text.length > 18
+                        ? lastMessage.text.substring(0, 18) + '...'
+                        : lastMessage.text || <BsFillImageFill size={16} />}
                 </p>
             </div>
         </div>
