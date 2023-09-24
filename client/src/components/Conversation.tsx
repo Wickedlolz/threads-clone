@@ -10,7 +10,7 @@ type ConversationProps = {
     conversation: IConversation;
 };
 
-const Conversation = ({ conversation }: ConversationProps) => {
+const Conversation = ({ isOnline, conversation }: ConversationProps) => {
     const dispatch = useAppDispatch();
     const user = conversation.participants[0];
     const currentUser = useAppSelector((state) => state.auth.user);
@@ -28,12 +28,17 @@ const Conversation = ({ conversation }: ConversationProps) => {
             } hover:cursor-pointer hover:bg-gray-600 hover:text-white`}
             onClick={() => dispatch(selectConversation(conversation))}
         >
-            <div>
+            <div className="relative">
                 <img
                     className="w-12 h-12 rounded-full cursor-pointer object-cover"
                     src={user?.photoURL}
                     alt={user?.name}
                 />
+                <span
+                    className={`w-4 h-4 rounded-full ${
+                        isOnline ? 'bg-green-500' : 'bg-red-500'
+                    } border-2 border-white absolute bottom-0.5 right-0.5`}
+                ></span>
             </div>
             <div className="flex flex-col font-medium">
                 <p className="font-bold flex items-center">
@@ -44,7 +49,7 @@ const Conversation = ({ conversation }: ConversationProps) => {
                         alt="verified badge"
                     />
                 </p>
-                <p className="flex font-medium items-center gap-1">
+                <div className="flex font-medium items-center gap-1">
                     {currentUser?._id === lastMessage.sender && (
                         <div
                             className={`${
@@ -57,7 +62,7 @@ const Conversation = ({ conversation }: ConversationProps) => {
                     {lastMessage?.text?.length > 18
                         ? lastMessage.text.substring(0, 18) + '...'
                         : lastMessage.text || <BsFillImageFill size={16} />}
-                </p>
+                </div>
             </div>
         </div>
     );

@@ -26,13 +26,13 @@ const MessageContainer = () => {
             if (selectedConversation?._id === message.conversationId) {
                 setMessages((prev) => [...prev, message]);
             }
-            console.log(message, selectedConversation?._id);
 
             const updatedConversations = conversations?.map((conversation) => {
                 if (conversation._id === message.conversationId) {
                     return {
                         ...conversation,
                         lastMessage: {
+                            ...conversation.lastMessage,
                             text: message.text,
                             sender: message.sender,
                         },
@@ -48,6 +48,35 @@ const MessageContainer = () => {
             socket?.off('newMessage');
         };
     }, [socket, selectedConversation, conversations, dispatch]);
+
+    useEffect(() => {
+        const lastMessageIsFromOtherUser =
+            messages.length &&
+            messages[messages.length - 1].sender !== currentUser?._id;
+
+        if (lastMessageIsFromOtherUser) {
+            socket?.emit('markMessagesAsSeen', {
+                conversationId: selectedConversation?._id,
+                userId: selectedConversation?.participants[0]._id,
+            });
+        }
+
+        socket?.on('messagesSeen', ({ conversationId }) => {
+            if (selectedConversation?._id === conversationId) {
+                setMessages((state) => {
+                    const updatedMessages = state.map((message) => {
+                        if (!message.seen) {
+                            return {
+                                ...message,
+                            };
+                        }
+                        return message;
+                    });
+                    return updatedMessages;
+                });
+            }
+        });
+    }, [socket, currentUser?._id, messages, selectedConversation]);
 
     useEffect(() => {
         setLoadingMessages(true);

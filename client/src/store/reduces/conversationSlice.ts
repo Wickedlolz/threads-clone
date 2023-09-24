@@ -27,9 +27,9 @@ export const conversationSlice = createSlice({
             state.selectedConversation = action.payload;
         },
         updateConversations: (state, action) => {
-            const conversations = state.conversations;
-            conversations?.map((conversation) => {
-                if (conversation._id === action.payload) {
+            const { conversationId } = action.payload;
+            state.conversations?.map((conversation) => {
+                if (conversation._id === conversationId) {
                     return {
                         ...conversation,
                         lastMessage: {
@@ -40,8 +40,6 @@ export const conversationSlice = createSlice({
                 }
                 return conversation;
             });
-
-            state.conversations = conversations;
         },
     },
     extraReducers: (builder) => {

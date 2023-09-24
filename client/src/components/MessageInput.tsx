@@ -38,6 +38,7 @@ const MessageInput = ({ setMessages }: MessageInputProps) => {
                             return {
                                 ...conversation,
                                 lastMessage: {
+                                    ...conversation.lastMessage,
                                     text: messageText,
                                     sender: message.sender,
                                 },
