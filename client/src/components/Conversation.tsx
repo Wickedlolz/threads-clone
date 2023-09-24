@@ -25,7 +25,7 @@ const Conversation = ({ isOnline, conversation }: ConversationProps) => {
                 selectedConversation?._id === conversation._id
                     ? 'bg-gray-600'
                     : ''
-            } hover:cursor-pointer hover:bg-gray-600 hover:text-white`}
+            } hover:cursor-pointer hover:bg-gray-600 hover:text-white w-full`}
             onClick={() => dispatch(selectConversation(conversation))}
         >
             <div className="relative">
@@ -60,7 +60,7 @@ const Conversation = ({ isOnline, conversation }: ConversationProps) => {
                         </div>
                     )}
                     {lastMessage?.text?.length > 18
-                        ? lastMessage.text.substring(0, 18) + '...'
+                        ? lastMessage.text.substring(0, 10) + '...'
                         : lastMessage.text || <BsFillImageFill size={16} />}
                 </div>
             </div>
