@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { useAppDispatch } from './store';
 import { getUser } from './store/reduces/authSlice';
 
+import { SocketContextProvider } from './contexts/SocketContext';
 import Home from './pages/Home';
 import MainLayout from './layouts/MainLayout';
 import AuthGuard from './components/AuthGuard';
@@ -26,71 +27,73 @@ const App = () => {
     }, []);
 
     return (
-        <Routes>
-            <Route element={<MainLayout />}>
-                <Route element={<AuthGuard />}>
-                    <Route path="/" element={<Home />} />
+        <SocketContextProvider>
+            <Routes>
+                <Route element={<MainLayout />}>
+                    <Route element={<AuthGuard />}>
+                        <Route path="/" element={<Home />} />
+                        <Route
+                            path="/profile/update"
+                            element={
+                                <Suspense fallback={<Spinner />}>
+                                    <UpdateProfile />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/chat"
+                            element={
+                                <Suspense fallback={<Spinner />}>
+                                    <Chat />
+                                </Suspense>
+                            }
+                        />
+                    </Route>
                     <Route
-                        path="/profile/update"
+                        path="/:username/thread/:threadId"
                         element={
                             <Suspense fallback={<Spinner />}>
-                                <UpdateProfile />
+                                <Thread />
+                            </Suspense>
+                        }
+                    />
+                    <Route element={<GuestGuard />}>
+                        <Route
+                            path="/login"
+                            element={
+                                <Suspense fallback={<Spinner />}>
+                                    <Login />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/signup"
+                            element={
+                                <Suspense fallback={<Spinner />}>
+                                    <SignUp />
+                                </Suspense>
+                            }
+                        />
+                    </Route>
+                    <Route
+                        path="/profile/:username"
+                        element={
+                            <Suspense fallback={<Spinner />}>
+                                <User />
                             </Suspense>
                         }
                     />
                     <Route
-                        path="/chat"
+                        path="/*"
                         element={
                             <Suspense fallback={<Spinner />}>
-                                <Chat />
+                                <NotFound />
                             </Suspense>
                         }
                     />
                 </Route>
-                <Route
-                    path="/:username/thread/:threadId"
-                    element={
-                        <Suspense fallback={<Spinner />}>
-                            <Thread />
-                        </Suspense>
-                    }
-                />
-                <Route element={<GuestGuard />}>
-                    <Route
-                        path="/login"
-                        element={
-                            <Suspense fallback={<Spinner />}>
-                                <Login />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/signup"
-                        element={
-                            <Suspense fallback={<Spinner />}>
-                                <SignUp />
-                            </Suspense>
-                        }
-                    />
-                </Route>
-                <Route
-                    path="/profile/:username"
-                    element={
-                        <Suspense fallback={<Spinner />}>
-                            <User />
-                        </Suspense>
-                    }
-                />
-                <Route
-                    path="/*"
-                    element={
-                        <Suspense fallback={<Spinner />}>
-                            <NotFound />
-                        </Suspense>
-                    }
-                />
-            </Route>
-        </Routes>
+            </Routes>
+        </SocketContextProvider>
     );
 };
 
