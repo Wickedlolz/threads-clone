@@ -16,11 +16,11 @@ const Message = ({ ownMessage, message }: MessageProps) => {
     const user = useAppSelector((state) => state.auth.user);
 
     return (
-        <>
+        <div className={ownMessage ? 'self-end' : ''}>
             {ownMessage ? (
                 <div className="flex gap-2 self-end">
                     {message.text && (
-                        <div className="flex flex-col w-full bg-gray-500 rounded-lg">
+                        <div className="flex flex-col bg-gray-500 rounded-lg">
                             <p className="max-w-sm bg-gray-500 py-1 px-2 break-words rounded-lg">
                                 {message.text}
                             </p>
@@ -33,7 +33,7 @@ const Message = ({ ownMessage, message }: MessageProps) => {
                             </div>
                         </div>
                     )}
-                    <div className="w-full">
+                    <div className="mr-2">
                         <img
                             className="w-9 h-9 rounded-full cursor-pointer object-cover"
                             src={user?.photoURL}
@@ -59,7 +59,7 @@ const Message = ({ ownMessage, message }: MessageProps) => {
                     )}
                 </div>
             )}
-        </>
+        </div>
     );
 };
 
