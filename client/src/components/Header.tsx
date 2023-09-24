@@ -16,7 +16,7 @@ const Header = () => {
     return (
         <>
             {user ? (
-                <header className="flex justify-between px-3 sm:justify-evenly mt-6 mb-12 items-center">
+                <header className="flex justify-between max-w-3xl mx-auto px-2 mt-6 mb-12 items-center">
                     <Link to="/" className="text-white">
                         <AiFillHome className="text-white" size={28} />
                     </Link>
