@@ -11,6 +11,9 @@ import { BsFillChatQuoteFill } from 'react-icons/bs';
 
 const Header = () => {
     const user = useAppSelector((state) => state.auth.user);
+    const newMessageNotification = useAppSelector(
+        (state) => state.conversations.newMessageNotification
+    );
     const logout = useLogout();
 
     return (
@@ -41,8 +44,11 @@ const Header = () => {
                                 <RxAvatar size={28} />
                             )}
                         </Link>
-                        <Link to={`/chat`}>
+                        <Link className="relative" to={`/chat`}>
                             <BsFillChatQuoteFill size={24} />
+                            {newMessageNotification.isNew && (
+                                <span className="w-4 h-4 rounded-full bg-red-500 border-2 border-white absolute top-[-3px] right-[-8px]"></span>
+                            )}
                         </Link>
                         <button className="text-xs" onClick={logout}>
                             <FiLogOut size={24} />
