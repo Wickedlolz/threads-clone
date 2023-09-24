@@ -62,6 +62,7 @@ const Chat = () => {
 
                 if (conversationAlreadyExists) {
                     dispatch(selectConversation(conversationAlreadyExists));
+                    setUserText('');
                     return;
                 }
 
