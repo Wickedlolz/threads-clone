@@ -1,5 +1,8 @@
 import { useAppDispatch, useAppSelector } from '../store';
-import { selectConversation } from '../store/reduces/conversationSlice';
+import {
+    selectConversation,
+    setNewMessageNotification,
+} from '../store/reduces/conversationSlice';
 import { IConversation } from '../interfaces/conversation';
 
 import VerifiedBadge from '../assets/verified_badge.svg';
@@ -14,10 +17,25 @@ const Conversation = ({ isOnline, conversation }: ConversationProps) => {
     const dispatch = useAppDispatch();
     const user = conversation.participants[0];
     const currentUser = useAppSelector((state) => state.auth.user);
+    const { conversationId } = useAppSelector(
+        (state) => state.conversations.newMessageNotification
+    );
     const lastMessage = conversation.lastMessage;
     const selectedConversation = useAppSelector(
         (state) => state.conversations.selectedConversation
     );
+
+    const handleSelectConversation = () => {
+        if (conversation._id === conversationId) {
+            dispatch(
+                setNewMessageNotification({
+                    isNew: false,
+                    conversationId: null,
+                })
+            );
+        }
+        dispatch(selectConversation(conversation));
+    };
 
     return (
         <div
@@ -26,11 +44,11 @@ const Conversation = ({ isOnline, conversation }: ConversationProps) => {
                     ? 'bg-gray-600'
                     : ''
             } hover:cursor-pointer hover:bg-gray-600 hover:text-white w-full`}
-            onClick={() => dispatch(selectConversation(conversation))}
+            onClick={handleSelectConversation}
         >
             <div className="relative">
                 <img
-                    className="w-12 h-12 rounded-full cursor-pointer object-cover"
+                    className="w-10 h-10 rounded-full cursor-pointer object-cover"
                     src={user?.photoURL}
                     alt={user?.name}
                 />
@@ -41,7 +59,7 @@ const Conversation = ({ isOnline, conversation }: ConversationProps) => {
                 ></span>
             </div>
             <div className="flex flex-col font-medium">
-                <p className="font-bold flex items-center">
+                <p className="font-bold text-sm flex items-center">
                     {user?.username}{' '}
                     <img
                         className="w-4 h-4 ml-1"
@@ -49,7 +67,7 @@ const Conversation = ({ isOnline, conversation }: ConversationProps) => {
                         alt="verified badge"
                     />
                 </p>
-                <div className="flex font-medium items-center gap-1">
+                <div className="flex font-medium text-xs items-center gap-1">
                     {currentUser?._id === lastMessage.sender && (
                         <div
                             className={`${
@@ -64,6 +82,10 @@ const Conversation = ({ isOnline, conversation }: ConversationProps) => {
                         : lastMessage.text || <BsFillImageFill size={16} />}
                 </div>
             </div>
+            {conversation._id === conversationId &&
+                selectedConversation?._id !== conversationId && (
+                    <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                )}
         </div>
     );
 };
