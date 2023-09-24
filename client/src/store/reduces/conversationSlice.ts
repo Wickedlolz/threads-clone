@@ -17,6 +17,9 @@ export const conversationSlice = createSlice({
     name: 'conversations',
     initialState,
     reducers: {
+        addConversations: (state, action) => {
+            state.conversations = action.payload;
+        },
         addConversation: (state, action) => {
             state.conversations = [action.payload, ...state.conversations!];
         },
@@ -52,7 +55,11 @@ export const getConversations = createAsyncThunk(GET_COVERSATIONS, async () => {
     return messageService.loadConversations();
 });
 
-export const { addConversation, updateConversations } =
-    conversationSlice.actions;
+export const {
+    addConversations,
+    addConversation,
+    updateConversations,
+    selectConversation,
+} = conversationSlice.actions;
 
 export default conversationSlice.reducer;
