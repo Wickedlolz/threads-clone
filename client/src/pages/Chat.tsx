@@ -103,7 +103,11 @@ const Chat = () => {
                                     setUserText(event.target.value)
                                 }
                             />
-                            <button type="submit" disabled={isLoadingUser}>
+                            <button
+                                type="submit"
+                                className="hover:scale-110"
+                                disabled={isLoadingUser}
+                            >
                                 {isLoadingUser ? (
                                     <Spinner isSmall />
                                 ) : (
