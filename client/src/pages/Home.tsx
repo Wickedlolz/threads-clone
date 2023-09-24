@@ -14,7 +14,7 @@ const Home = () => {
 
     return (
         <section className="flex gap-8 items-start">
-            <div className="flex  md:w-[70%]">
+            <div className="flex flex-col md:w-[70%]">
                 {feed?.length === 0 && (
                     <h1 className="text-center">
                         Follow some users to see the feed
