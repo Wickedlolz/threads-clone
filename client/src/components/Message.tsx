@@ -1,33 +1,45 @@
+import { IMessage } from '../interfaces/message';
+import { useAppSelector } from '../store';
+
 type MessageProps = {
     ownMessage: boolean;
+    message: IMessage;
 };
 
-const Message = ({ ownMessage }: MessageProps) => {
+const Message = ({ ownMessage, message }: MessageProps) => {
+    const selectedConversation = useAppSelector(
+        (state) => state.conversations.selectedConversation
+    );
+    const user = useAppSelector((state) => state.auth.user);
+
     return (
         <>
             {ownMessage ? (
                 <div className="flex gap-2 self-end">
-                    <p className="max-w-sm bg-blue-400 p-1 rounded-lg">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Quas, accusantiumi
-                    </p>
+                    {message.text && (
+                        <p className="max-w-sm bg-blue-400 p-1 rounded-lg">
+                            {message.text}
+                        </p>
+                    )}
+
                     <img
-                        className="w-12 h-12 rounded-full cursor-pointer object-cover"
-                        src="https://images.unsplash.com/photo-1513462447748-c1d2dd474b1e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                        alt="asd"
+                        className="w-8 h-8 rounded-full cursor-pointer object-cover"
+                        src={user?.photoURL}
+                        alt={user?.name}
                     />
                 </div>
             ) : (
                 <div className="flex gap-2">
                     <img
-                        className="w-12 h-12 rounded-full cursor-pointer object-cover"
-                        src="https://images.unsplash.com/photo-1513462447748-c1d2dd474b1e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                        alt="asd"
+                        className="w-8 h-8 rounded-full cursor-pointer object-cover"
+                        src={selectedConversation?.participants[0].photoURL}
+                        alt={selectedConversation?.participants[0].name}
                     />
-                    <p className="max-w-sm bg-blue-400 p-1 rounded-lg">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Quas, accusantiumi
-                    </p>
+                    {message.text && (
+                        <p className="max-w-sm bg-blue-400 p-1 rounded-lg">
+                            {message.text}
+                        </p>
+                    )}
                 </div>
             )}
         </>
