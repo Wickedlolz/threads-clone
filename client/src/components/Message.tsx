@@ -33,12 +33,13 @@ const Message = ({ ownMessage, message }: MessageProps) => {
                             </div>
                         </div>
                     )}
-
-                    <img
-                        className="w-9 h-9 rounded-full cursor-pointer object-cover"
-                        src={user?.photoURL}
-                        alt={user?.name}
-                    />
+                    <div className="w-full">
+                        <img
+                            className="w-9 h-9 rounded-full cursor-pointer object-cover"
+                            src={user?.photoURL}
+                            alt={user?.name}
+                        />
+                    </div>
                 </div>
             ) : (
                 <div className="flex gap-2">
