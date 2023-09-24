@@ -7,6 +7,7 @@ const endpoints = {
     getMessagesById: (participantId: string) =>
         `/api/v1/messages/${participantId}`,
     createConversation: '/api/v1/messages/conversations',
+    sendMessage: '/api/v1/messages',
 };
 
 export const loadConversations = () => {
@@ -20,5 +21,17 @@ export const getMessagesById = (participantId: string) => {
 export const createConversation = (participantId: string) => {
     return requester.post<IConversation>(endpoints.createConversation, {
         participantId,
+    });
+};
+
+export const sendMessage = (
+    recipientId: string,
+    message: string,
+    img?: string
+) => {
+    return requester.post<IMessage>(endpoints.sendMessage, {
+        recipientId,
+        message,
+        img,
     });
 };
