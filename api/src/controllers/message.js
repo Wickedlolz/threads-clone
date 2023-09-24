@@ -57,6 +57,19 @@ router.post('/conversations', isAuth(), async (req, res) => {
     }
 });
 
+router.delete('/conversations/:conversationId', isAuth(), async (req, res) => {
+    const { conversationId } = req.params;
+    try {
+        const deletedConversation = await messageService.deleteConversationById(
+            conversationId
+        );
+        res.json(deletedConversation);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
 router.get('/:participantId', isAuth(), async (req, res) => {
     const { participantId } = req.params;
     const userId = req.user.id;

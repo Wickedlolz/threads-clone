@@ -71,6 +71,13 @@ exports.createConversation = async function (userId, participantId) {
     return conversation;
 };
 
+exports.deleteConversationById = async function (conversationId) {
+    const deletedConversarion = await Conversation.findByIdAndRemove(
+        conversationId
+    );
+    return deletedConversarion;
+};
+
 exports.getMessages = async function (userId, participantId) {
     const conversation = await Conversation.findOne({
         participants: { $all: [userId, participantId] },
