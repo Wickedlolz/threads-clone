@@ -7,6 +7,7 @@ import {
     updateConversations,
 } from '../store/reduces/conversationSlice';
 import { useSocketContext } from '../contexts/SocketContext';
+import { messageService, userService } from '../services';
 import { toast } from 'react-toastify';
 
 import { BiSearch } from 'react-icons/bi';
@@ -14,7 +15,6 @@ import { GiConversation } from 'react-icons/gi';
 import Conversation from '../components/Conversation';
 import MessageContainer from '../components/MessageContainer';
 import Spinner from '../components/Spinner';
-import { messageService, userService } from '../services';
 
 const Chat = () => {
     const dispatch = useAppDispatch();

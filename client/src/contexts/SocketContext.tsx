@@ -6,7 +6,8 @@ import {
     useState,
 } from 'react';
 import io, { Socket } from 'socket.io-client';
-import { useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
+import { setNewMessageNotification } from '../store/reduces/conversationSlice';
 
 interface InitialSocketState {
     socket: Socket | null;
@@ -26,6 +27,10 @@ export const SocketContextProvider = ({
     children,
 }: SocketContextProviderProps) => {
     const user = useAppSelector((state) => state.auth.user);
+    const { conversations, selectedConversation } = useAppSelector(
+        (state) => state.conversations
+    );
+    const dispatch = useAppDispatch();
     const [socket, setSocket] = useState<Socket | null>(null);
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
@@ -46,6 +51,23 @@ export const SocketContextProvider = ({
             socket && socket.close();
         };
     }, [user?._id]);
+
+    useEffect(() => {
+        socket?.on('newMessage', (message) => {
+            if (selectedConversation?._id !== message.conversationId) {
+                dispatch(
+                    setNewMessageNotification({
+                        isNew: true,
+                        conversationId: message.conversationId,
+                    })
+                );
+            }
+        });
+
+        return () => {
+            socket?.off('newMessage');
+        };
+    }, [socket, conversations, dispatch, selectedConversation?._id]);
 
     return (
         <SocketContext.Provider value={{ socket, onlineUsers }}>
