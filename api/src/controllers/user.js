@@ -4,7 +4,7 @@ const { isAuth } = require('../middlewares/guards');
 const userService = require('../services/user');
 const { mapErrors } = require('../utils/mapErrors');
 
-router.get('/:username', async (req, res) => {
+router.get('/user/:username', async (req, res) => {
     const { username } = req.params;
 
     try {
