@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useSocketContext } from '../contexts/SocketContext';
 import { addConversations } from '../store/reduces/conversationSlice';
@@ -19,6 +19,7 @@ const MessageContainer = () => {
     const { socket } = useSocketContext();
     const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
     const [messages, setMessages] = useState<IMessage[]>([]);
+    const messageEndRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         socket?.on('newMessage', (message) => {
@@ -59,6 +60,13 @@ const MessageContainer = () => {
             .finally(() => setLoadingMessages(false));
     }, [selectedConversation]);
 
+    useEffect(() => {
+        messageEndRef.current?.scrollTo({
+            top: messageEndRef.current.scrollHeight,
+            behavior: 'smooth',
+        });
+    }, [messages]);
+
     return (
         <div className="flex flex-[70] flex-col bg-gray-800 rounded-lg p-2">
             <div className="flex w-full h-12 items-center gap-2">
@@ -75,21 +83,20 @@ const MessageContainer = () => {
                 />
             </div>
             <p className="w-full h-[1px] bg-gray-500"></p>
-            <div className="flex flex-col h-96 overflow-y-auto">
+            <div
+                className="flex flex-col gap-4 my-3 h-96 overflow-y-auto"
+                ref={messageEndRef}
+            >
                 {!loadingMessages &&
                     messages.map((message) => (
-                        <div
+                        <Message
                             key={message._id}
-                            className="flex flex-col gap-4 my-4 p-2 h-96 overflow-hidden"
-                        >
-                            <Message
-                                message={message}
-                                ownMessage={currentUser?._id === message.sender}
-                            />
-                        </div>
+                            message={message}
+                            ownMessage={currentUser?._id === message.sender}
+                        />
                     ))}
             </div>
-            <MessageInput />
+            <MessageInput setMessages={setMessages} />
         </div>
     );
 };
