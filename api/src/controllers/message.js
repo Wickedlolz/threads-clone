@@ -41,6 +41,22 @@ router.get('/conversations', isAuth(), async (req, res) => {
     }
 });
 
+router.post('/conversations', isAuth(), async (req, res) => {
+    const userId = req.user.id;
+    const { participantId } = req.body;
+
+    try {
+        const conversation = await messageService.createConversation(
+            userId,
+            participantId
+        );
+        res.json(conversation);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
 router.get('/:participantId', isAuth(), async (req, res) => {
     const { participantId } = req.params;
     const userId = req.user.id;

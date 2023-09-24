@@ -48,7 +48,7 @@ exports.getConversations = async function (userId) {
         participants: userId,
     }).populate({
         path: 'participants',
-        select: 'username profilePic',
+        select: 'username name photoURL',
     });
 
     // remove the current user from the participants array
@@ -59,6 +59,16 @@ exports.getConversations = async function (userId) {
     });
 
     return conversations;
+};
+
+exports.createConversation = async function (userId, participantId) {
+    const conversation = new Conversation({
+        participants: [participantId, userId],
+    });
+
+    await conversation.save();
+
+    return conversation;
 };
 
 exports.getMessages = async function (userId, participantId) {
