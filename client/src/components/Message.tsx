@@ -17,13 +17,13 @@ const Message = ({ ownMessage, message }: MessageProps) => {
             {ownMessage ? (
                 <div className="flex gap-2 self-end">
                     {message.text && (
-                        <p className="max-w-sm bg-blue-400 p-1 rounded-lg">
+                        <p className="max-w-sm bg-blue-400 p-1.5 rounded-lg">
                             {message.text}
                         </p>
                     )}
 
                     <img
-                        className="w-8 h-8 rounded-full cursor-pointer object-cover"
+                        className="w-9 h-9 rounded-full cursor-pointer object-cover"
                         src={user?.photoURL}
                         alt={user?.name}
                     />
@@ -31,12 +31,12 @@ const Message = ({ ownMessage, message }: MessageProps) => {
             ) : (
                 <div className="flex gap-2">
                     <img
-                        className="w-8 h-8 rounded-full cursor-pointer object-cover"
+                        className="w-9 h-9 rounded-full cursor-pointer object-cover"
                         src={selectedConversation?.participants[0].photoURL}
                         alt={selectedConversation?.participants[0].name}
                     />
                     {message.text && (
-                        <p className="max-w-sm bg-blue-400 p-1 rounded-lg">
+                        <p className="max-w-sm bg-blue-400 p-1.5 rounded-lg">
                             {message.text}
                         </p>
                     )}
