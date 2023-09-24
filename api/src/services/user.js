@@ -56,8 +56,11 @@ exports.getSuggestedUsers = async function (userId) {
     ]);
 
     const filteredUsers = users.filter(
-        (user) => !usersFollowedByYou.following.includes(user._id)
+        (user) =>
+            !usersFollowedByYou.following.includes(user._id) &&
+            user._id.toString() !== userId
     );
+
     const suggestedUsers = filteredUsers.slice(0, 4);
 
     suggestedUsers.forEach((user) => (user.password = null));
