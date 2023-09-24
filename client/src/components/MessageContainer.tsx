@@ -1,17 +1,73 @@
+import { useState, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../store';
+import { useSocketContext } from '../contexts/SocketContext';
+import { addConversations } from '../store/reduces/conversationSlice';
+import { messageService } from '../services';
+import { toast } from 'react-toastify';
+import { IMessage } from '../interfaces/message';
+
 import VerifiedBadge from '../assets/verified_badge.svg';
 import Message from './Message';
 import MessageInput from './MessageInput';
 
 const MessageContainer = () => {
+    const { selectedConversation, conversations } = useAppSelector(
+        (state) => state.conversations
+    );
+    const currentUser = useAppSelector((state) => state.auth.user);
+    const dispatch = useAppDispatch();
+    const { socket } = useSocketContext();
+    const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
+    const [messages, setMessages] = useState<IMessage[]>([]);
+
+    useEffect(() => {
+        socket?.on('newMessage', (message) => {
+            if (selectedConversation?._id === message.conversationId) {
+                setMessages((prev) => [...prev, message]);
+            }
+            console.log(message, selectedConversation?._id);
+
+            const updatedConversations = conversations?.map((conversation) => {
+                if (conversation._id === message.conversationId) {
+                    return {
+                        ...conversation,
+                        lastMessage: {
+                            text: message.text,
+                            sender: message.sender,
+                        },
+                    };
+                }
+                return conversation;
+            });
+
+            dispatch(addConversations(updatedConversations));
+        });
+
+        return () => {
+            socket?.off('newMessage');
+        };
+    }, [socket, selectedConversation, conversations, dispatch]);
+
+    useEffect(() => {
+        setLoadingMessages(true);
+        messageService
+            .getMessagesById(selectedConversation!.participants[0]._id)
+            .then((messages) => {
+                setMessages(messages);
+            })
+            .catch((error) => toast.error(error.message))
+            .finally(() => setLoadingMessages(false));
+    }, [selectedConversation]);
+
     return (
         <div className="flex flex-[70] flex-col bg-gray-800 rounded-lg p-2">
             <div className="flex w-full h-12 items-center gap-2">
                 <img
                     className="w-7 h-7 rounded-full cursor-pointer object-cover"
-                    src="https://images.unsplash.com/photo-1513462447748-c1d2dd474b1e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                    alt="asd"
+                    src={selectedConversation?.participants[0].photoURL}
+                    alt={selectedConversation?.participants[0].name}
                 />
-                johndoe{' '}
+                {selectedConversation?.participants[0].username}{' '}
                 <img
                     className="w-4 h-4"
                     src={VerifiedBadge}
@@ -19,11 +75,19 @@ const MessageContainer = () => {
                 />
             </div>
             <p className="w-full h-[1px] bg-gray-500"></p>
-            <div className="flex flex-col gap-4 my-4 p-2 h-96 overflow-hidden">
-                <Message ownMessage={true} />
-                <Message ownMessage={false} />
-                <Message ownMessage={true} />
-                <Message ownMessage={false} />
+            <div className="flex flex-col h-96 overflow-y-auto">
+                {!loadingMessages &&
+                    messages.map((message) => (
+                        <div
+                            key={message._id}
+                            className="flex flex-col gap-4 my-4 p-2 h-96 overflow-hidden"
+                        >
+                            <Message
+                                message={message}
+                                ownMessage={currentUser?._id === message.sender}
+                            />
+                        </div>
+                    ))}
             </div>
             <MessageInput />
         </div>
