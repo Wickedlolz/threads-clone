@@ -4,7 +4,7 @@ import {
     addConversation,
     getConversations,
     selectConversation,
-    updateConversations,
+    updateConversationById,
 } from '../store/reduces/conversationSlice';
 import { useSocketContext } from '../contexts/SocketContext';
 import { messageService, userService } from '../services';
@@ -34,10 +34,18 @@ const Chat = () => {
 
     useEffect(() => {
         socket?.on('messagesSeen', ({ conversationId }) => {
-            dispatch(updateConversations(conversationId));
+            dispatch(updateConversationById(conversationId));
         });
     }, [socket, dispatch]);
 
+    /**
+     * Handles the search for a conversation with a user based on the provided event.
+     * Prevents default form submission behavior, validates input, and initiates the conversation process.
+     *
+     * @param {FormEvent<HTMLFormElement>} event - The event triggered by the form submission.
+     *
+     * @returns {void}
+     */
     const handleConversationSearch = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (isLoadingUser || userText.length === 0) {
@@ -97,6 +105,7 @@ const Chat = () => {
                             <input
                                 className="p-1 text-black rounded-lg w-full"
                                 type="text"
+                                name="searchUser"
                                 placeholder="Search for a user"
                                 value={userText}
                                 onChange={(event) =>
