@@ -38,6 +38,10 @@ export const conversationSlice = createSlice({
             state.conversations = state.conversations!.filter(
                 (conversation) => conversation._id !== action.payload._id
             );
+
+            if (state.selectedConversation?._id === action.payload._id) {
+                state.selectedConversation = null;
+            }
         },
         updateConversations: (state, action) => {
             const { conversationId } = action.payload;
