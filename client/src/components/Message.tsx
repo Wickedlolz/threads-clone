@@ -20,21 +20,24 @@ const Message = ({ ownMessage, message }: MessageProps) => {
     return (
         <div className={`${ownMessage ? 'self-end' : ''}`}>
             {ownMessage ? (
-                <div className="flex gap-2 self-end p-2">
+                <div className="flex gap-2 self-end">
                     {message.text && (
                         <div className="flex flex-col bg-gray-500 rounded-lg">
-                            <p className="max-w-sm bg-gray-500 py-1 px-2 break-words rounded-lg">
+                            <p className="max-w-sm bg-gray-500 px-1 break-words rounded-lg">
                                 {message.text}
                             </p>
                             <div
-                                className={`overflow-hidden flex items-center justify-end gap-1 self-end mr-2 font-bold ${
-                                    message.seen ? 'text-blue-300' : ''
-                                }`}
+                                className={`overflow-hidden flex items-center justify-end gap-1 self-end mr-2 font-bold`}
                             >
                                 <span className="text-[9px] pl-1">
                                     {createdAt}
                                 </span>
-                                <BsCheck2All size={16} />
+                                <BsCheck2All
+                                    size={16}
+                                    className={`${
+                                        message.seen ? 'text-blue-300' : ''
+                                    }`}
+                                />
                             </div>
                         </div>
                     )}
@@ -58,9 +61,18 @@ const Message = ({ ownMessage, message }: MessageProps) => {
                         />
                     </Link>
                     {message.text && (
-                        <p className="max-w-sm bg-blue-400 py-1 px-2 break-words rounded-lg">
-                            {message.text}
-                        </p>
+                        <div className="flex flex-col bg-blue-400 rounded-lg">
+                            <p className="max-w-sm bg-blue-400 px-1 break-words rounded-lg">
+                                {message.text}
+                            </p>
+                            <div
+                                className={`overflow-hidden flex items-center justify-end gap-1 self-end mr-2 font-bold`}
+                            >
+                                <span className="text-[9px] pl-1">
+                                    {createdAt}
+                                </span>
+                            </div>
+                        </div>
                     )}
                 </div>
             )}
