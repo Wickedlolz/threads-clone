@@ -5,4 +5,6 @@ export interface IMessage {
     text: string;
     seen: boolean;
     img: string;
+    createdAt: string;
+    updatedAt: string;
 }
