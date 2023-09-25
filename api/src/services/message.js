@@ -75,6 +75,9 @@ exports.deleteConversationById = async function (conversationId) {
     const deletedConversarion = await Conversation.findByIdAndRemove(
         conversationId
     );
+
+    await Message.deleteMany({ conversationId });
+
     return deletedConversarion;
 };
 
