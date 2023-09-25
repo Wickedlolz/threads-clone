@@ -1,13 +1,20 @@
-import { IUser } from './user';
-
 export interface IConversation {
     _id: string;
-    participants: IUser[];
+    participants: IParticipant[];
     lastMessage: ILastMessage;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface ILastMessage {
     text: string;
     sender: string;
     seen: boolean;
+}
+
+interface IParticipant {
+    _id: string;
+    name: string;
+    username: string;
+    photoURL: string;
 }
