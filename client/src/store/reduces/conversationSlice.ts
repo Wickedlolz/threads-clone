@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { IConversation } from '../../interfaces/conversation';
-import { GET_COVERSATIONS } from '../actions/conversation';
+import { DELETE_COVERSATION, GET_COVERSATIONS } from '../actions/conversation';
 import { messageService } from '../../services';
+import { toast } from 'react-toastify';
 
 export interface IConversationsInitialState {
     conversations: IConversation[] | null;
@@ -34,16 +35,7 @@ export const conversationSlice = createSlice({
         selectConversation: (state, action) => {
             state.selectedConversation = action.payload;
         },
-        removeConversation: (state, action) => {
-            state.conversations = state.conversations!.filter(
-                (conversation) => conversation._id !== action.payload._id
-            );
-
-            if (state.selectedConversation?._id === action.payload._id) {
-                state.selectedConversation = null;
-            }
-        },
-        updateConversations: (state, action) => {
+        updateConversationById: (state, action) => {
             const { conversationId } = action.payload;
             state.conversations?.map((conversation) => {
                 if (conversation._id === conversationId) {
@@ -61,11 +53,31 @@ export const conversationSlice = createSlice({
         setNewMessageNotification: (state, action) => {
             state.newMessageNotification = action.payload;
         },
+        clearConversations: (state) => {
+            state.conversations = null;
+            state.selectedConversation = null;
+            state.newMessageNotification = {
+                conversationId: null,
+                isNew: false,
+            };
+        },
     },
     extraReducers: (builder) => {
-        builder.addCase(getConversations.fulfilled, (state, action) => {
-            state.conversations = action.payload;
-        });
+        builder
+            .addCase(getConversations.fulfilled, (state, action) => {
+                state.conversations = action.payload;
+            })
+            .addCase(deleteConversationById.pending, () => {})
+            .addCase(deleteConversationById.fulfilled, (state, action) => {
+                state.conversations = state.conversations!.filter(
+                    (conversation) => conversation._id !== action.payload._id
+                );
+
+                if (state.selectedConversation?._id === action.payload._id) {
+                    state.selectedConversation = null;
+                }
+                toast.success('Successfully deleted conversation');
+            });
     },
 });
 
@@ -73,13 +85,20 @@ export const getConversations = createAsyncThunk(GET_COVERSATIONS, async () => {
     return messageService.loadConversations();
 });
 
+export const deleteConversationById = createAsyncThunk(
+    DELETE_COVERSATION,
+    async (conversationId: string) => {
+        return messageService.deleteConversationById(conversationId);
+    }
+);
+
 export const {
     addConversations,
     addConversation,
-    updateConversations,
+    updateConversationById,
     selectConversation,
     setNewMessageNotification,
-    removeConversation,
+    clearConversations,
 } = conversationSlice.actions;
 
 export default conversationSlice.reducer;
