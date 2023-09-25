@@ -46,51 +46,52 @@ const Chat = () => {
      *
      * @returns {void}
      */
-    const handleConversationSearch = (event: FormEvent<HTMLFormElement>) => {
+    const handleConversationSearch = async (
+        event: FormEvent<HTMLFormElement>
+    ) => {
         event.preventDefault();
+
         if (isLoadingUser || userText.length === 0) {
             return;
         }
 
         setIsLoadingUser(true);
 
-        userService
-            .getUserByUsername(userText)
-            .then((user) => {
-                const messagingYourself = user._id === currentUser?._id;
-                if (messagingYourself) {
-                    toast.error('You cannot message yourself');
-                    return;
-                }
+        try {
+            const user = await userService.getUserByUsername(userText);
 
-                const conversationAlreadyExists = conversations?.find(
-                    (conversation) =>
-                        conversation.participants[0]._id === user._id
-                );
+            const messagingYourself = user._id === currentUser?._id;
+            if (messagingYourself) {
+                toast.error('You cannot message yourself');
+                return;
+            }
 
-                if (conversationAlreadyExists) {
-                    dispatch(selectConversation(conversationAlreadyExists));
-                    setUserText('');
-                    return;
-                }
+            const conversationAlreadyExists = conversations?.find(
+                (conversation) => conversation.participants[0]._id === user._id
+            );
 
-                messageService
-                    .createConversation(user._id)
-                    .then((createdConversation) => {
-                        dispatch(
-                            addConversation({
-                                ...createdConversation,
-                                participants: [user, currentUser],
-                            })
-                        );
-                        setUserText('');
-                    })
-                    .catch((error) => {
-                        throw error;
-                    });
-            })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setIsLoadingUser(false));
+            if (conversationAlreadyExists) {
+                dispatch(selectConversation(conversationAlreadyExists));
+                setUserText('');
+                return;
+            }
+
+            const createdConversation = await messageService.createConversation(
+                user._id
+            );
+            dispatch(
+                addConversation({
+                    ...createdConversation,
+                    participants: [user, currentUser],
+                })
+            );
+            setUserText('');
+        } catch (error) {
+            const { message } = error as { message: string };
+            toast.error(message);
+        } finally {
+            setIsLoadingUser(false);
+        }
     };
 
     return (
