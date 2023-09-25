@@ -1,14 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
-import { useSocketContext } from '../contexts/SocketContext';
-import {
-    addConversations,
-    removeConversation,
-} from '../store/reduces/conversationSlice';
-import { messageService } from '../services';
+import { deleteConversationById } from '../store/reduces/conversationSlice';
+import useMessages from '../hooks/useMessages';
 import { toast } from 'react-toastify';
-import { IMessage } from '../interfaces/message';
 
 import VerifiedBadge from '../assets/verified_badge.svg';
 import Message from './Message';
@@ -18,83 +13,14 @@ import { FiPhoneCall } from 'react-icons/fi';
 import { BsPersonAdd } from 'react-icons/bs';
 
 const MessageContainer = () => {
-    const { selectedConversation, conversations } = useAppSelector(
+    const { selectedConversation } = useAppSelector(
         (state) => state.conversations
     );
     const currentUser = useAppSelector((state) => state.auth.user);
     const dispatch = useAppDispatch();
-    const { socket } = useSocketContext();
-    const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
-    const [messages, setMessages] = useState<IMessage[]>([]);
+    const { messages, addMessage, loadingMessages, updateLoadingMessages } =
+        useMessages();
     const messageEndRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        socket?.on('newMessage', (message) => {
-            if (selectedConversation?._id === message.conversationId) {
-                setMessages((prev) => [...prev, message]);
-            }
-
-            const updatedConversations = conversations?.map((conversation) => {
-                if (conversation._id === message.conversationId) {
-                    return {
-                        ...conversation,
-                        lastMessage: {
-                            ...conversation.lastMessage,
-                            text: message.text,
-                            sender: message.sender,
-                        },
-                    };
-                }
-                return conversation;
-            });
-
-            dispatch(addConversations(updatedConversations));
-        });
-
-        return () => {
-            socket?.off('newMessage');
-        };
-    }, [socket, selectedConversation, conversations, dispatch]);
-
-    useEffect(() => {
-        const lastMessageIsFromOtherUser =
-            messages.length &&
-            messages[messages.length - 1].sender !== currentUser?._id;
-
-        if (lastMessageIsFromOtherUser) {
-            socket?.emit('markMessagesAsSeen', {
-                conversationId: selectedConversation?._id,
-                userId: selectedConversation?.participants[0]._id,
-            });
-        }
-
-        socket?.on('messagesSeen', ({ conversationId }) => {
-            if (selectedConversation?._id === conversationId) {
-                setMessages((state) => {
-                    const updatedMessages = state.map((message) => {
-                        if (!message.seen) {
-                            return {
-                                ...message,
-                            };
-                        }
-                        return message;
-                    });
-                    return updatedMessages;
-                });
-            }
-        });
-    }, [socket, currentUser?._id, messages, selectedConversation]);
-
-    useEffect(() => {
-        setLoadingMessages(true);
-        messageService
-            .getMessagesById(selectedConversation!.participants[0]._id)
-            .then((messages) => {
-                setMessages(messages);
-            })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setLoadingMessages(false));
-    }, [selectedConversation]);
 
     useEffect(() => {
         messageEndRef.current?.scrollTo({
@@ -118,15 +44,11 @@ const MessageContainer = () => {
     const handleDeleteConversation = () => {
         if (loadingMessages) return;
 
-        setLoadingMessages(true);
-        messageService
-            .deleteConversationById(selectedConversation!._id)
-            .then((deletedConversation) => {
-                dispatch(removeConversation(deletedConversation));
-                toast.success('Successfully deleted conversation');
-            })
+        updateLoadingMessages(true);
+        dispatch(deleteConversationById(selectedConversation!._id))
+            .unwrap()
             .catch((error) => toast.error(error.message))
-            .finally(() => setLoadingMessages(false));
+            .finally(() => updateLoadingMessages(false));
     };
 
     return (
@@ -173,7 +95,7 @@ const MessageContainer = () => {
                         />
                     ))}
             </div>
-            <MessageInput setMessages={setMessages} />
+            <MessageInput addMessage={addMessage} />
         </div>
     );
 };
