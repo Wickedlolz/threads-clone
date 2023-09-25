@@ -34,6 +34,11 @@ export const conversationSlice = createSlice({
         selectConversation: (state, action) => {
             state.selectedConversation = action.payload;
         },
+        removeConversation: (state, action) => {
+            state.conversations = state.conversations!.filter(
+                (conversation) => conversation._id !== action.payload._id
+            );
+        },
         updateConversations: (state, action) => {
             const { conversationId } = action.payload;
             state.conversations?.map((conversation) => {
@@ -70,6 +75,7 @@ export const {
     updateConversations,
     selectConversation,
     setNewMessageNotification,
+    removeConversation,
 } = conversationSlice.actions;
 
 export default conversationSlice.reducer;

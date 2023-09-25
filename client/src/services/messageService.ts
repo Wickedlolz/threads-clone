@@ -3,15 +3,16 @@ import { IConversation } from '../interfaces/conversation';
 import { IMessage } from '../interfaces/message';
 
 const endpoints = {
-    getConversations: '/api/v1/messages/conversations',
+    conversations: '/api/v1/messages/conversations',
     getMessagesById: (participantId: string) =>
         `/api/v1/messages/${participantId}`,
-    createConversation: '/api/v1/messages/conversations',
     sendMessage: '/api/v1/messages',
+    deleteConversationById: (conversationId: string) =>
+        `/api/v1/messages/conversations/${conversationId}`,
 };
 
 export const loadConversations = () => {
-    return requester.get<IConversation[]>(endpoints.getConversations);
+    return requester.get<IConversation[]>(endpoints.conversations);
 };
 
 export const getMessagesById = (participantId: string) => {
@@ -19,7 +20,7 @@ export const getMessagesById = (participantId: string) => {
 };
 
 export const createConversation = (participantId: string) => {
-    return requester.post<IConversation>(endpoints.createConversation, {
+    return requester.post<IConversation>(endpoints.conversations, {
         participantId,
     });
 };
@@ -34,4 +35,10 @@ export const sendMessage = (
         message,
         img,
     });
+};
+
+export const deleteConversationById = (conversationId: string) => {
+    return requester.del<IConversation>(
+        endpoints.deleteConversationById(conversationId)
+    );
 };
