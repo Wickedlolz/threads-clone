@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, useState } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { addConversations } from '../store/reduces/conversationSlice';
 import { messageService } from '../services';
@@ -8,10 +8,10 @@ import { toast } from 'react-toastify';
 import { IoSendSharp } from 'react-icons/io5';
 
 type MessageInputProps = {
-    setMessages: Dispatch<React.SetStateAction<IMessage[]>>;
+    addMessage: (message: IMessage) => void;
 };
 
-const MessageInput = ({ setMessages }: MessageInputProps) => {
+const MessageInput = ({ addMessage }: MessageInputProps) => {
     const [messageText, setMessageText] = useState<string>('');
     const { selectedConversation, conversations } = useAppSelector(
         (state) => state.conversations
@@ -19,6 +19,13 @@ const MessageInput = ({ setMessages }: MessageInputProps) => {
     const dispatch = useAppDispatch();
     const [isSending, setIsSending] = useState<boolean>(false);
 
+    /**
+     * Handles sending a message in the selected conversation.
+     *
+     * @param {FormEvent<HTMLFormElement>} event - The event triggered by the form submission.
+     *
+     * @returns {void}
+     */
     const handleSendMessage = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -31,28 +38,42 @@ const MessageInput = ({ setMessages }: MessageInputProps) => {
         messageService
             .sendMessage(selectedConversation!.participants[0]._id, messageText)
             .then((message) => {
-                setMessages((state) => [...state, message]);
-                const updatedConversations = conversations?.map(
-                    (conversation) => {
-                        if (conversation._id === selectedConversation?._id) {
-                            return {
-                                ...conversation,
-                                lastMessage: {
-                                    ...conversation.lastMessage,
-                                    text: messageText,
-                                    sender: message.sender,
-                                },
-                            };
-                        }
-                        return conversation;
-                    }
-                );
-                dispatch(addConversations(updatedConversations));
+                updateConversations(messageText, message.sender);
+                addMessage(message);
                 setMessageText('');
             })
             .catch((error) => toast.error(error.message))
             .finally(() => setIsSending(false));
     };
+
+    /**
+     * Updates the conversations based on the sent message.
+     *
+     * @param {string} messageText - The text of the message being sent.
+     * @returns {Promise<void>} A promise that resolves when the conversations are updated.
+     *
+     * @returns {void}
+     */
+    const updateConversations = useCallback(
+        (messageText: string, sender: string) => {
+            const updatedConversations = conversations?.map((conversation) => {
+                if (conversation._id === selectedConversation?._id) {
+                    return {
+                        ...conversation,
+                        lastMessage: {
+                            ...conversation.lastMessage,
+                            text: messageText,
+                            sender: sender,
+                        },
+                    };
+                }
+                return conversation;
+            });
+
+            dispatch(addConversations(updatedConversations));
+        },
+        [conversations, dispatch, selectedConversation]
+    );
 
     return (
         <form className="flex" onSubmit={handleSendMessage}>
@@ -61,6 +82,7 @@ const MessageInput = ({ setMessages }: MessageInputProps) => {
                 name="message"
                 className="w-full p-2 text-black outline-none"
                 placeholder="Type a message"
+                autoComplete="off"
                 value={messageText}
                 onChange={(event) => setMessageText(event.target.value)}
             />
