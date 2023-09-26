@@ -13,6 +13,7 @@ exports.getFeed = async function (userId) {
         .sort({
             createdAt: -1,
         })
+        .limit(10)
         .lean();
 
     const result = feed.map((thread) => {
@@ -47,6 +48,7 @@ exports.getUserThreads = async function (username) {
         .sort({ createdAt: -1 })
         .populate('postedBy')
         .populate('replies')
+        .limit(10)
         .lean();
 
     const result = threads.map((thread) => {
