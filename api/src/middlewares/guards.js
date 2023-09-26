@@ -24,9 +24,10 @@ exports.isGuest = function () {
 exports.isOwner = function () {
     return async (req, res, next) => {
         const { threadId } = req.params;
+        const userId = req.user.id;
         const thread = await threadService.getById(threadId);
 
-        if (thread._id === threadId) {
+        if (thread.postedBy._id === userId) {
             next();
         } else {
             res.status(401).json({ message: 'You cannot modify this thread.' });
