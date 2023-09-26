@@ -36,9 +36,10 @@ export const conversationSlice = createSlice({
             state.selectedConversation = action.payload;
         },
         updateConversationById: (state, action) => {
-            const { conversationId } = action.payload;
-            state.conversations?.map((conversation) => {
-                if (conversation._id === conversationId) {
+            const conversations = state.conversations;
+
+            const updatedConversations = conversations?.map((conversation) => {
+                if (conversation._id === action.payload) {
                     return {
                         ...conversation,
                         lastMessage: {
@@ -49,6 +50,8 @@ export const conversationSlice = createSlice({
                 }
                 return conversation;
             });
+
+            state.conversations = updatedConversations!;
         },
         setNewMessageNotification: (state, action) => {
             state.newMessageNotification = action.payload;

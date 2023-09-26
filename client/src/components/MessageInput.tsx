@@ -64,6 +64,7 @@ const MessageInput = ({ addMessage }: MessageInputProps) => {
                             ...conversation.lastMessage,
                             text: messageText,
                             sender: sender,
+                            seen: false,
                         },
                     };
                 }

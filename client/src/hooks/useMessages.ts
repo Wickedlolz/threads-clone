@@ -71,6 +71,7 @@ const useMessages = () => {
                         if (!message.seen) {
                             return {
                                 ...message,
+                                seen: true,
                             };
                         }
                         return message;
