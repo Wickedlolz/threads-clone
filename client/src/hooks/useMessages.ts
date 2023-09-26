@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 
 import { IMessage } from '../interfaces/message';
 
+import messageSound from '../assets/sounds/message.mp3';
+
 const useMessages = () => {
     const { selectedConversation, conversations } = useAppSelector(
         (state) => state.conversations
@@ -21,6 +23,11 @@ const useMessages = () => {
         socket?.on('newMessage', (message) => {
             if (selectedConversation?._id === message.conversationId) {
                 setMessages((prev) => [...prev, message]);
+            }
+
+            if (!document.hasFocus()) {
+                const sound = new Audio(messageSound);
+                sound.play();
             }
 
             const updatedConversations = conversations?.map((conversation) => {
@@ -75,6 +82,8 @@ const useMessages = () => {
     }, [socket, currentUser?._id, messages, selectedConversation]);
 
     useEffect(() => {
+        if (selectedConversation?.mock) return;
+
         setLoadingMessages(true);
         messageService
             .getMessagesById(selectedConversation!.participants[0]._id)
