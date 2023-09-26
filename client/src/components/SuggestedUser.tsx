@@ -26,8 +26,8 @@ const SuggestedUser = ({ user }: SuggestedUserProps) => {
                 onClick={handleFollowUnfollow}
                 className={`${
                     following
-                        ? 'text-black bg-white hover:bg-gray-200 px-1 py-2'
-                        : 'text-white bg-blue-400 hover:bg-blue-700 p-2'
+                        ? 'text-black bg-white hover:bg-gray-200 p-1'
+                        : 'text-white bg-blue-400 hover:bg-blue-700 px-2.5 py-1'
                 } rounded-lg duration-300`}
             >
                 {following ? 'Unfollow' : 'Follow'}
