@@ -16,7 +16,9 @@ export interface IReplay {
     text: string;
     userProfilePic: string;
     username: string;
+    likes: string[];
     createdAt: string;
+    updatedAt: string;
 }
 
 export interface IPostedBy {
