@@ -2,7 +2,7 @@ const router = require('express').Router();
 
 const threadService = require('../services/thread');
 
-const { isAuth } = require('../middlewares/guards');
+const { isAuth, isOwner } = require('../middlewares/guards');
 const { body, validationResult } = require('express-validator');
 const { mapErrors } = require('../utils/mapErrors');
 
@@ -176,7 +176,7 @@ router.put('/reply/like/:replyId', isAuth(), async (req, res) => {
     }
 });
 
-router.delete('/:threadId', isAuth(), async (req, res) => {
+router.delete('/:threadId', isAuth(), isOwner(), async (req, res) => {
     const { threadId } = req.params;
     const userId = req.user.id;
 
