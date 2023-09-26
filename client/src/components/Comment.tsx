@@ -41,7 +41,9 @@ const Comment = ({ reply }: CommentProps) => {
                             liked={liked}
                             handleLikeAndUnlike={handleLikeAndUnlike}
                         />
-                        <p className="text-gray-500 text-sm">2 likes</p>
+                        <p className="text-gray-500 text-sm">
+                            {reply.likes.length} likes
+                        </p>
                     </div>
                 </div>
             </div>
