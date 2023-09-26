@@ -7,7 +7,7 @@ import {
     updateConversationById,
 } from '../store/reduces/conversationSlice';
 import { useSocketContext } from '../contexts/SocketContext';
-import { messageService, userService } from '../services';
+import { userService } from '../services';
 import { toast } from 'react-toastify';
 
 import { BiSearch } from 'react-icons/bi';
@@ -76,15 +76,23 @@ const Chat = () => {
                 return;
             }
 
-            const createdConversation = await messageService.createConversation(
-                user._id
-            );
-            dispatch(
-                addConversation({
-                    ...createdConversation,
-                    participants: [user, currentUser],
-                })
-            );
+            const mockConversation = {
+                mock: true,
+                lastMessage: {
+                    text: '',
+                    sender: '',
+                },
+                _id: Date.now(),
+                participants: [
+                    {
+                        _id: user._id,
+                        username: user.username,
+                        photoURL: user.photoURL,
+                    },
+                ],
+            };
+            dispatch(addConversation(mockConversation));
+
             setUserText('');
         } catch (error) {
             const { message } = error as { message: string };

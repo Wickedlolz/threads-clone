@@ -1,4 +1,5 @@
 export interface IConversation {
+    mock?: boolean;
     _id: string;
     participants: IParticipant[];
     lastMessage: ILastMessage;
