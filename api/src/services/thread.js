@@ -1,4 +1,5 @@
 const Thread = require('../models/Thread');
+const Reply = require('../models/Reply');
 const User = require('../models/User');
 const { v2: cloudinary } = require('cloudinary');
 
@@ -82,7 +83,10 @@ exports.create = async function (userId, text, img) {
 };
 
 exports.getById = async function (threadId) {
-    const thread = await Thread.findById(threadId).populate('postedBy').lean();
+    const thread = await Thread.findById(threadId)
+        .populate('postedBy')
+        .populate('replies')
+        .lean();
 
     const result = {
         ...thread,
@@ -156,16 +160,16 @@ exports.replyById = async function (
 ) {
     const thread = await Thread.findById(threadId).populate('postedBy');
 
-    const reply = {
+    const reply = new Reply({
         userId,
         userProfilePic: profilePic,
         username,
         text,
-        createdAt: new Date().toLocaleString(),
-    };
+    });
 
     thread.replies.push(reply);
 
+    await reply.save();
     await thread.save();
 
     const result = {
