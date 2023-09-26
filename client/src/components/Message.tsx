@@ -22,8 +22,8 @@ const Message = ({ ownMessage, message }: MessageProps) => {
             {ownMessage ? (
                 <div className="flex gap-2 self-end">
                     {message.text && (
-                        <div className="flex flex-col bg-gray-500 rounded-lg">
-                            <p className="max-w-sm bg-gray-500 px-1 break-words rounded-lg">
+                        <div className="flex flex-col bg-gray-500 rounded-lg px-1 pt-0.5">
+                            <p className="max-w-sm bg-gray-500 px-1 break-words rounded-lg text-sm">
                                 {message.text}
                             </p>
                             <div
@@ -61,8 +61,8 @@ const Message = ({ ownMessage, message }: MessageProps) => {
                         />
                     </Link>
                     {message.text && (
-                        <div className="flex flex-col bg-blue-400 rounded-lg">
-                            <p className="max-w-sm bg-blue-400 px-1 break-words rounded-lg">
+                        <div className="flex flex-col bg-blue-400 rounded-lg px-1 pt-0.5">
+                            <p className="max-w-sm bg-blue-400 px-1 break-words rounded-lg text-sm">
                                 {message.text}
                             </p>
                             <div
