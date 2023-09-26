@@ -163,6 +163,19 @@ router.put(
     }
 );
 
+router.put('/reply/like/:replyId', isAuth(), async (req, res) => {
+    const { replyId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const updatedReply = await threadService.likeReplyById(userId, replyId);
+        res.json(updatedReply);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
 router.delete('/:threadId', isAuth(), async (req, res) => {
     const { threadId } = req.params;
     const userId = req.user.id;

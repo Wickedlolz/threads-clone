@@ -193,6 +193,21 @@ exports.replyById = async function (
     return result;
 };
 
+exports.likeReplyById = async function (userId, replyId) {
+    const reply = await Reply.findById(replyId);
+    const isLiked = reply.likes.includes(userId);
+
+    if (isLiked) {
+        reply.likes.pull(userId);
+    } else {
+        reply.likes.push(userId);
+    }
+
+    await reply.save();
+
+    return reply;
+};
+
 exports.deleteById = async function (threadId, userId) {
     const thread = await Thread.findById(threadId);
 
