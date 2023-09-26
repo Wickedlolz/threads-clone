@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store';
 import { authService } from '../services';
 import { removeUser } from '../store/reduces/authSlice';
-import { clearThread, clearThreads } from '../store/reduces/threadsSlice';
+import { clearThreads } from '../store/reduces/threadsSlice';
 import { clearConversations } from '../store/reduces/conversationSlice';
 import { toast } from 'react-toastify';
 
@@ -22,7 +22,6 @@ const useLogout = () => {
             .logout()
             .then(() => {
                 dispatch(removeUser());
-                dispatch(clearThread());
                 dispatch(clearThreads());
                 dispatch(clearConversations());
                 navigate('/');

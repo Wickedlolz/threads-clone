@@ -67,11 +67,10 @@ export const threadsSlice = createSlice({
         updateUser: (state, action) => {
             state.user = action.payload;
         },
-        clearThread: (state) => {
-            state.thread = null;
-        },
         clearThreads: (state) => {
             state.feed = null;
+            state.thread = null;
+            state.user = null;
         },
     },
     extraReducers: (builder) => {
@@ -173,7 +172,6 @@ export const {
     updateThread,
     updateUser,
     updateThreadReply,
-    clearThread,
     clearThreads,
 } = threadsSlice.actions;
 
