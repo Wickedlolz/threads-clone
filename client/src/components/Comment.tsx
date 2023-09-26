@@ -20,6 +20,12 @@ const Comment = ({ reply }: CommentProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const passedTime = moment(reply?.createdAt).fromNow();
 
+    /**
+     * Handles liking or unliking a reply by its ID. Updates the thread reply data accordingly.
+     * If loading is in progress, the function does nothing.
+     *
+     * @returns {void}
+     */
     const handleLikeAndUnlikeReply = () => {
         if (isLoading) return;
 
