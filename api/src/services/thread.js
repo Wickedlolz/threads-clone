@@ -9,6 +9,7 @@ exports.getFeed = async function (userId) {
 
     const feed = await Thread.find({ postedBy: { $in: following } })
         .populate('postedBy')
+        .populate('replies')
         .sort({
             createdAt: -1,
         })
@@ -45,6 +46,7 @@ exports.getUserThreads = async function (username) {
     const threads = await Thread.find({ postedBy: user._id })
         .sort({ createdAt: -1 })
         .populate('postedBy')
+        .populate('replies')
         .lean();
 
     const result = threads.map((thread) => {
@@ -191,7 +193,7 @@ exports.replyById = async function (
     return result;
 };
 
-exports.deleteById = async function (threadId) {
+exports.deleteById = async function (threadId, userId) {
     const thread = await Thread.findById(threadId);
 
     if (thread.img) {
@@ -200,6 +202,7 @@ exports.deleteById = async function (threadId) {
     }
 
     const deletedThread = await Thread.findByIdAndRemove(threadId);
+    await Reply.deleteMany({ userId });
 
     return deletedThread;
 };

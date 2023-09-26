@@ -165,9 +165,10 @@ router.put(
 
 router.delete('/:threadId', isAuth(), async (req, res) => {
     const { threadId } = req.params;
+    const userId = req.user.id;
 
     try {
-        const deletedThread = await threadService.deleteById(threadId);
+        const deletedThread = await threadService.deleteById(threadId, userId);
         res.json(deletedThread);
     } catch (error) {
         const errors = mapErrors(error);
