@@ -1,5 +1,5 @@
 import { requester } from '.';
-import { IThread } from '../interfaces/thread';
+import { IReplay, IThread } from '../interfaces/thread';
 
 const endpoints = {
     feed: '/api/v1/threads/feed',
@@ -10,6 +10,7 @@ const endpoints = {
     replyToThreadById: (threadId: string) =>
         `/api/v1/threads/reply/${threadId}`,
     deleteThreadById: (threadId: string) => `/api/v1/threads/${threadId}`,
+    likeReplyById: (replyId: string) => `/api/v1/threads/reply/like/${replyId}`,
 };
 
 export const getFeed = () => {
@@ -40,4 +41,8 @@ export const replyToThreadById = (threadId: string, threadText: string) => {
 
 export const deleteThreadById = (threadId: string) => {
     return requester.del<IThread>(endpoints.deleteThreadById(threadId));
+};
+
+export const likeReplyById = (replyId: string) => {
+    return requester.put<IReplay>(endpoints.likeReplyById(replyId));
 };

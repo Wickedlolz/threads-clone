@@ -34,6 +34,18 @@ export const threadsSlice = createSlice({
         setThreads: (state, action) => {
             state.feed = action.payload;
         },
+        updateThreadReply: (state, action) => {
+            const reply = state.thread?.replies.find(
+                (reply) => reply._id === action.payload._id
+            );
+            const replyIndex = state.thread?.replies.findIndex(
+                (reply) => reply._id === action.payload._id
+            );
+
+            if (reply) {
+                state.thread!.replies[replyIndex!] = action.payload;
+            }
+        },
         updateThread: (state, action) => {
             const thread = state.feed?.find(
                 (thread) => thread._id === action.payload._id
@@ -160,6 +172,7 @@ export const {
     setThreads,
     updateThread,
     updateUser,
+    updateThreadReply,
     clearThread,
     clearThreads,
 } = threadsSlice.actions;
