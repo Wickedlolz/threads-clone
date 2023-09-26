@@ -24,25 +24,11 @@ const threadSchema = new Schema(
             ref: 'User',
             default: [],
         },
-        replies: [
-            {
-                userId: {
-                    type: ObjectId,
-                    ref: 'User',
-                    required: true,
-                },
-                text: {
-                    type: String,
-                    required: true,
-                },
-                userProfilePic: {
-                    type: String,
-                },
-                username: {
-                    type: String,
-                },
-            },
-        ],
+        replies: {
+            type: [ObjectId],
+            ref: 'Reply',
+            default: [],
+        },
     },
     { timestamps: true }
 );
