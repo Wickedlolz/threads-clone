@@ -125,7 +125,9 @@ exports.updateById = async function (threadId, text, img) {
 };
 
 exports.like = async function (threadId, userId) {
-    const thread = await Thread.findById(threadId).populate('postedBy');
+    const thread = await Thread.findById(threadId)
+        .populate('postedBy')
+        .populate('replies');
     const isLiked = thread.likes.includes(userId);
 
     if (isLiked) {

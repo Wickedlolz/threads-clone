@@ -16,7 +16,7 @@ type CommentProps = {
 const Comment = ({ reply }: CommentProps) => {
     const user = useAppSelector((state) => state.auth.user);
     const dispatch = useAppDispatch();
-    const liked: boolean = reply.likes.includes(user!._id);
+    const liked: boolean = reply.likes?.includes(user?._id || '');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const passedTime = moment(reply?.createdAt).fromNow();
 
@@ -64,7 +64,7 @@ const Comment = ({ reply }: CommentProps) => {
                             handleLikeAndUnlike={handleLikeAndUnlikeReply}
                         />
                         <p className="text-gray-500 text-sm">
-                            {reply.likes.length} likes
+                            {reply.likes?.length} likes
                         </p>
                     </div>
                 </div>
