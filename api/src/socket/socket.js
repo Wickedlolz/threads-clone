@@ -1,5 +1,5 @@
 const { Server } = require('socket.io');
-const https = require('https');
+const http = require('http');
 const express = require('express');
 const Message = require('../models/Message.js');
 const Conversation = require('../models/Conversation.js');
@@ -11,7 +11,7 @@ const whitelist = [
 ];
 
 const app = express();
-const server = https.createServer(app);
+const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: whitelist,
