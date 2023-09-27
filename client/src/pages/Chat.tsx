@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import {
     addConversation,
+    clearConversations,
     getConversations,
     selectConversation,
     updateConversationById,
@@ -30,6 +31,10 @@ const Chat = () => {
         dispatch(getConversations())
             .unwrap()
             .catch((error) => toast.error(error.message));
+
+        return () => {
+            dispatch(clearConversations());
+        };
     }, [dispatch]);
 
     useEffect(() => {
