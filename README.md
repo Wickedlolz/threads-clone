@@ -70,8 +70,8 @@ Ensure you have the following software installed on your machine:
 
 2. Start the frontend application:
    From the client directory, run:
-   `npm start`
-   The client application will start running at http://localhost:3000.
+   `npm run dev`
+   The client application will start running at http://localhost:5173.
 
 3. Access the application:
    Open your web browser and go to http://localhost:3000 to access the Threads Clone application.
