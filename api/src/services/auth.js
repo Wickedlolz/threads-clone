@@ -114,7 +114,7 @@ exports.updateProfile = async function (userId, userData) {
         {
             $set: {
                 'replies.$[reply].username': user.username,
-                'replies.$[reply].userProfilePic': user.profilePic,
+                'replies.$[reply].userProfilePic': user.photoURL,
             },
         },
         { arrayFilters: [{ 'reply.userId': userId }] }
