@@ -25,6 +25,14 @@ const Conversation = ({ isOnline, conversation }: ConversationProps) => {
         (state) => state.conversations.selectedConversation
     );
 
+    /**
+     * Handles the selection of a conversation and updates the message notification status.
+     * If the conversation's ID matches the provided conversation ID, it marks the conversation
+     * as not having new messages and clears the conversation ID from the new message notification.
+     * Dispatches an action to select the provided conversation.
+     *
+     * @returns {void}
+     */
     const handleSelectConversation = () => {
         if (conversation._id === conversationId) {
             dispatch(
