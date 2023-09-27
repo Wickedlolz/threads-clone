@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
 const User = require('../models/User');
 const TokenBlacklist = require('../models/TokenBlacklist');
-const Thread = require('../models/Thread');
+const Reply = require('../models/Reply');
 const jwt = require('jsonwebtoken');
 const { compare, hash } = require('bcrypt');
 const { v2: cloudinary } = require('cloudinary');
@@ -109,15 +109,14 @@ exports.updateProfile = async function (userId, userData) {
 
     await user.save();
 
-    await Thread.updateMany(
-        { 'replies.userId': userId },
+    await Reply.updateMany(
+        { userId },
         {
             $set: {
-                'replies.$[reply].username': user.username,
-                'replies.$[reply].userProfilePic': user.photoURL,
+                username: user.username,
+                userProfilePic: user.photoURL,
             },
-        },
-        { arrayFilters: [{ 'reply.userId': userId }] }
+        }
     );
 
     return user;
