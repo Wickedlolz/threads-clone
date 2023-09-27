@@ -1,4 +1,5 @@
-const baseUrl = 'http://localhost:5000';
+// const baseUrl = 'http://localhost:5000';
+const baseUrl = 'https://threads-clone-api-theta.vercel.app';
 
 interface IOptions {
     method: string;
