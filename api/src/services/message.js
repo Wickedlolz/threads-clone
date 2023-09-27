@@ -76,6 +76,9 @@ exports.deleteConversationById = async function (conversationId) {
         conversationId
     );
 
+    // TODO: when delete conversation delete all uploaded images from cloudinary related with messages in
+    // this conversation
+
     await Message.deleteMany({ conversationId });
 
     return deletedConversarion;

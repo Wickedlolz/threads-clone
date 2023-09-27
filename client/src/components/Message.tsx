@@ -21,26 +21,32 @@ const Message = ({ ownMessage, message }: MessageProps) => {
         <div className={`${ownMessage ? 'self-end' : ''}`}>
             {ownMessage ? (
                 <div className="flex gap-2 self-end">
-                    {message.text && (
-                        <div className="flex flex-col bg-gray-500 rounded-lg px-1 pt-0.5">
+                    <div className="flex flex-col bg-gray-500 rounded-lg px-1 pt-0.5">
+                        {message.text && (
                             <p className="max-w-sm bg-gray-500 px-1 break-words rounded-lg text-sm">
                                 {message.text}
                             </p>
-                            <div
-                                className={`overflow-hidden flex items-center justify-end gap-1 self-end mr-2 font-bold`}
-                            >
-                                <span className="text-[9px] pl-1">
-                                    {createdAt}
-                                </span>
-                                <BsCheck2All
-                                    size={16}
-                                    className={`${
-                                        message.seen ? 'text-blue-300' : ''
-                                    }`}
-                                />
-                            </div>
+                        )}
+                        {message.img && (
+                            <img
+                                className="w-52 object-cover"
+                                src={message.img}
+                                alt={message.text}
+                                loading="lazy"
+                            />
+                        )}
+                        <div
+                            className={`overflow-hidden flex items-center justify-end gap-1 self-end mr-2 font-bold`}
+                        >
+                            <span className="text-[9px] pl-1">{createdAt}</span>
+                            <BsCheck2All
+                                size={16}
+                                className={`${
+                                    message.seen ? 'text-blue-300' : ''
+                                }`}
+                            />
                         </div>
-                    )}
+                    </div>
                     <div className="mr-2">
                         <img
                             className="w-9 h-9 rounded-full cursor-pointer object-cover"
@@ -60,20 +66,26 @@ const Message = ({ ownMessage, message }: MessageProps) => {
                             alt={selectedConversation?.participants[0].name}
                         />
                     </Link>
-                    {message.text && (
-                        <div className="flex flex-col bg-blue-400 rounded-lg px-1 pt-0.5">
+                    <div className="flex flex-col bg-blue-400 rounded-lg px-1 pt-0.5">
+                        {message.text && (
                             <p className="max-w-sm bg-blue-400 px-1 break-words rounded-lg text-sm">
                                 {message.text}
                             </p>
-                            <div
-                                className={`overflow-hidden flex items-center justify-end gap-1 self-end mr-2 font-bold`}
-                            >
-                                <span className="text-[9px] pl-1">
-                                    {createdAt}
-                                </span>
-                            </div>
+                        )}
+                        {message.img && (
+                            <img
+                                className="w-52 object-cover"
+                                src={message.img}
+                                alt={message.text}
+                                loading="lazy"
+                            />
+                        )}
+                        <div
+                            className={`overflow-hidden flex items-center justify-end gap-1 self-end mr-2 font-bold`}
+                        >
+                            <span className="text-[9px] pl-1">{createdAt}</span>
                         </div>
-                    )}
+                    </div>
                 </div>
             )}
         </div>
