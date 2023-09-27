@@ -35,7 +35,7 @@ export const SocketContextProvider = ({
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
     useEffect(() => {
-        const socket = io('https://threads-clone-api-theta.vercel.app', {
+        const socket = io('http://localhost:5000', {
             query: {
                 userId: user?._id,
             },
