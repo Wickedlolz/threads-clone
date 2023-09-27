@@ -8,6 +8,7 @@ const whitelist = [
     'http://localhost:5000',
     'http://localhost:5173',
     'https://threads-clone-roan-three.vercel.app',
+    'https://threads-clone-wickedlolz.vercel.app/',
 ];
 
 const app = express();
