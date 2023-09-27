@@ -5,12 +5,7 @@ const cookieParser = require('cookie-parser');
 const authMiddleware = require('../middlewares/auth');
 const { v2: cloudinary } = require('cloudinary');
 
-const whitelist = [
-    'http://localhost:5000',
-    'http://localhost:5173',
-    'https://threads-clone-roan-three.vercel.app',
-    'https://threads-clone-wickedlolz.vercel.app/',
-];
+const whitelist = ['http://localhost:5000', 'http://localhost:5173'];
 
 module.exports = (app) => {
     app.use(express.json({ limit: '50mb' }));

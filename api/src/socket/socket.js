@@ -4,12 +4,7 @@ const express = require('express');
 const Message = require('../models/Message.js');
 const Conversation = require('../models/Conversation.js');
 
-const whitelist = [
-    'http://localhost:5000',
-    'http://localhost:5173',
-    'https://threads-clone-roan-three.vercel.app',
-    'https://threads-clone-wickedlolz.vercel.app/',
-];
+const whitelist = ['http://localhost:5000', 'http://localhost:5173'];
 
 const app = express();
 const server = http.createServer(app);
