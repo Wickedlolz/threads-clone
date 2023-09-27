@@ -38,20 +38,24 @@ export const conversationSlice = createSlice({
         updateConversationById: (state, action) => {
             const conversations = state.conversations;
 
-            const updatedConversations = conversations?.map((conversation) => {
-                if (conversation._id === action.payload) {
-                    return {
-                        ...conversation,
-                        lastMessage: {
-                            ...conversation.lastMessage,
-                            seen: true,
-                        },
-                    };
-                }
-                return conversation;
-            });
+            if (conversations) {
+                const updatedConversations = conversations.map(
+                    (conversation) => {
+                        if (conversation._id === action.payload) {
+                            return {
+                                ...conversation,
+                                lastMessage: {
+                                    ...conversation.lastMessage,
+                                    seen: true,
+                                },
+                            };
+                        }
+                        return conversation;
+                    }
+                );
 
-            state.conversations = updatedConversations!;
+                state.conversations = updatedConversations;
+            }
         },
         setNewMessageNotification: (state, action) => {
             state.newMessageNotification = action.payload;
@@ -70,7 +74,6 @@ export const conversationSlice = createSlice({
             .addCase(getConversations.fulfilled, (state, action) => {
                 state.conversations = action.payload;
             })
-            .addCase(deleteConversationById.pending, () => {})
             .addCase(deleteConversationById.fulfilled, (state, action) => {
                 state.conversations = state.conversations!.filter(
                     (conversation) => conversation._id !== action.payload._id
