@@ -28,6 +28,14 @@ const UserThread = ({ thread }: UserThreadType) => {
         navigate(`/profile/${thread.postedBy.username}`);
     };
 
+    /**
+     * Handles the deletion of a thread.
+     * This function prevents the default event action, checks if the thread is currently being updated,
+     * and dispatches an action to delete the thread by its ID. It displays success or error messages using toast accordingly.
+     *
+     * @param {MouseEvent} event - The mouse event triggering the deletion.
+     * @returns {void}
+     */
     const handleDeleteThread = (event: MouseEvent) => {
         event.preventDefault();
 

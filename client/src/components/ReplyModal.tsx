@@ -18,6 +18,15 @@ const ReplyModal = ({ thread, setOpenReplyModal }: ReplyModalProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
+    /**
+     * Handles the submission of a reply to a thread.
+     * This function prevents the default form submission, validates the reply text,
+     * and calls the threadService to submit the reply. It then dispatches an action to update the thread,
+     * displays a success message using toast, and closes the reply modal.
+     *
+     * @param {FormEvent<HTMLFormElement>} event - The form submission event.
+     * @returns {void}
+     */
     const handleReply = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
