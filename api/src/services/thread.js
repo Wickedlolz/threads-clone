@@ -164,7 +164,9 @@ exports.replyById = async function (
     username,
     text
 ) {
-    const thread = await Thread.findById(threadId).populate('postedBy');
+    const thread = await Thread.findById(threadId)
+        .populate('postedBy')
+        .populate('replies');
 
     const reply = new Reply({
         userId,
