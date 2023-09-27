@@ -175,6 +175,7 @@ router.post('/logout', isAuth(), async (req, res) => {
         res.clearCookie(process.env.COOKIE_NAME, {
             httpOnly: true,
             secure: true,
+            sameSite: 'none',
             maxAge: new Date(Date.now()),
         })
             .status(204)
