@@ -56,7 +56,6 @@ router.post(
 
             res.cookie(process.env.COOKIE_NAME, token, {
                 httpOnly: true,
-                secure: true,
                 sameSite: 'none',
             });
             res.status(201).json(result);
@@ -110,7 +109,6 @@ router.post(
 
             res.cookie(process.env.COOKIE_NAME, token, {
                 httpOnly: true,
-                secure: true,
                 sameSite: 'none',
             });
             res.status(200).json(result);
