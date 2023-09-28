@@ -74,7 +74,7 @@ Ensure you have the following software installed on your machine:
    The client application will start running at http://localhost:5173.
 
 3. Access the application:
-   Open your web browser and go to http://localhost:3000 to access the Threads Clone application.
+   Open your web browser and go to http://localhost:5173 to access the Threads Clone application.
 
 # Contributing
 
