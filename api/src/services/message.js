@@ -76,8 +76,14 @@ exports.deleteConversationById = async function (conversationId) {
         conversationId
     );
 
-    // TODO: when delete conversation delete all uploaded images from cloudinary related with messages in
-    // this conversation
+    const messages = await Message.find({ conversationId });
+
+    for (const message of messages) {
+        if (message.img) {
+            const imgId = message.img.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(imgId);
+        }
+    }
 
     await Message.deleteMany({ conversationId });
 
