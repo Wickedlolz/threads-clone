@@ -6,7 +6,7 @@ const { isAuth, isOwner } = require('../middlewares/guards');
 const { body, validationResult } = require('express-validator');
 const { mapErrors } = require('../utils/mapErrors');
 
-router.get('/feed', async (req, res) => {
+router.get('/feed', isAuth(), async (req, res) => {
     const userId = req.user.id;
 
     try {
