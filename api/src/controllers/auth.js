@@ -56,7 +56,6 @@ router.post(
 
             res.cookie(process.env.COOKIE_NAME, token, {
                 httpOnly: true,
-                sameSite: 'none',
             });
             res.status(201).json(result);
         } catch (error) {
@@ -109,7 +108,6 @@ router.post(
 
             res.cookie(process.env.COOKIE_NAME, token, {
                 httpOnly: true,
-                sameSite: 'none',
             });
             res.status(200).json(result);
         } catch (error) {

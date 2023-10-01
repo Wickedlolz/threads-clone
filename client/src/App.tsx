@@ -57,6 +57,7 @@ const App = () => {
                             </Suspense>
                         }
                     />
+
                     <Route element={<GuestGuard />}>
                         <Route
                             path="/login"
@@ -75,6 +76,7 @@ const App = () => {
                             }
                         />
                     </Route>
+
                     <Route
                         path="/profile/:username"
                         element={
