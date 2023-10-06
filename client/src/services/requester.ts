@@ -40,7 +40,7 @@ async function requester<T>(
     try {
         const response = await fetch(baseUrl + url, options);
 
-        if (response.ok === false) {
+        if (!response.ok) {
             const err = await response.json();
             throw new Error(err.message);
         }
