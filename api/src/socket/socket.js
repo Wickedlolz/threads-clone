@@ -13,6 +13,7 @@ const io = new Server(server, {
         origin: whitelist,
         credentials: true,
     },
+    secure: true,
 });
 
 const getRecipientSocketId = (recipientId) => {
