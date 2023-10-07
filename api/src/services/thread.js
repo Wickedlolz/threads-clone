@@ -9,6 +9,7 @@ exports.getFeed = async function (userId) {
 
     const feed = await Thread.find({ postedBy: { $in: following } })
         .populate('postedBy')
+        .populate('repostedBy')
         .populate('replies')
         .sort({
             createdAt: -1,
@@ -44,9 +45,12 @@ exports.getUserThreads = async function (username) {
         throw { message: 'User not found' };
     }
 
-    const threads = await Thread.find({ postedBy: user._id })
+    const threads = await Thread.find({
+        $or: [{ postedBy: user._id }, { repostedBy: user._id }],
+    })
         .sort({ createdAt: -1 })
         .populate('postedBy')
+        .populate('repostedBy')
         .populate('replies')
         .limit(10)
         .lean();
@@ -212,6 +216,15 @@ exports.likeReplyById = async function (userId, replyId) {
     await reply.save();
 
     return reply;
+};
+
+exports.repostThreadByUserId = async function (userId, threadId) {
+    const thread = await Thread.findById(threadId);
+    thread.repostedBy = userId;
+
+    await thread.save();
+
+    return thread;
 };
 
 exports.deleteById = async function (threadId, userId) {
