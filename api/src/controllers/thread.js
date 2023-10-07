@@ -176,6 +176,22 @@ router.put('/reply/like/:replyId', isAuth(), async (req, res) => {
     }
 });
 
+router.put('/repost/:threadId', isAuth(), async (req, res) => {
+    const { threadId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const thread = await threadService.repostThreadByUserId(
+            userId,
+            threadId
+        );
+        res.status(201).json(thread);
+    } catch (error) {
+        const errors = mapErrors(error);
+        res.status(400).json({ message: errors });
+    }
+});
+
 router.delete('/:threadId', isAuth(), isOwner(), async (req, res) => {
     const { threadId } = req.params;
     const userId = req.user.id;

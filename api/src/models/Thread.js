@@ -29,6 +29,11 @@ const threadSchema = new Schema(
             ref: 'Reply',
             default: [],
         },
+        repostedBy: {
+            type: [ObjectId],
+            ref: 'User',
+            default: [],
+        },
     },
     { timestamps: true }
 );

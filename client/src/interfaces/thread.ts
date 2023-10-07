@@ -1,3 +1,5 @@
+import { IUser } from './user';
+
 export interface IThread {
     _id: string;
     postedBy: IPostedBy;
@@ -7,6 +9,7 @@ export interface IThread {
     img: string;
     createdAt: string;
     updatedAt: string;
+    repostedBy: IUser[];
     __v: number;
 }
 

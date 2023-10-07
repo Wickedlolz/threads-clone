@@ -1,7 +1,19 @@
-const RepostSvg = () => {
+import { IThread } from '../interfaces/thread';
+import { useAppSelector } from '../store';
+
+type RepostSvgProps = {
+    thread: IThread | null;
+    handleRepostThread: () => void;
+};
+
+const RepostSvg = ({ thread, handleRepostThread }: RepostSvgProps) => {
+    const user = useAppSelector((state) => state.auth.user);
+    const isReposted = thread?.repostedBy?.find((u) => u._id === user?._id);
+
     return (
         <svg
-            className="cursor-pointer"
+            onClick={handleRepostThread}
+            className={`cursor-pointer ${isReposted ? 'text-green-500' : ''}`}
             aria-label="Repost"
             color="currentColor"
             fill="currentColor"
