@@ -11,6 +11,7 @@ const endpoints = {
         `/api/v1/threads/reply/${threadId}`,
     deleteThreadById: (threadId: string) => `/api/v1/threads/${threadId}`,
     likeReplyById: (replyId: string) => `/api/v1/threads/reply/like/${replyId}`,
+    repostThread: (threadId: string) => `/api/v1/threads/repost/${threadId}`,
 };
 
 export const getFeed = () => {
@@ -45,4 +46,8 @@ export const deleteThreadById = (threadId: string) => {
 
 export const likeReplyById = (replyId: string) => {
     return requester.put<IReplay>(endpoints.likeReplyById(replyId));
+};
+
+export const repostThread = (threadId: string) => {
+    return requester.put<IThread>(endpoints.repostThread(threadId));
 };
