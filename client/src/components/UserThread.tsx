@@ -110,9 +110,7 @@ const UserThread = ({ thread }: UserThreadType) => {
                                     width={16}
                                     height={16}
                                 />
-                                {thread?.repostedBy?.find(
-                                    (u) => u._id === user?._id
-                                ) && (
+                                {thread?.repostedBy?.includes(user!._id) && (
                                     <p className="text-xs text-gray-500">
                                         You reposted
                                     </p>

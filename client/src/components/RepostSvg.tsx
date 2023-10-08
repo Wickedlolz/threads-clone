@@ -8,7 +8,7 @@ type RepostSvgProps = {
 
 const RepostSvg = ({ thread, handleRepostThread }: RepostSvgProps) => {
     const user = useAppSelector((state) => state.auth.user);
-    const isReposted = thread?.repostedBy?.find((u) => u._id === user?._id);
+    const isReposted = thread?.repostedBy?.includes(user!._id);
 
     return (
         <svg

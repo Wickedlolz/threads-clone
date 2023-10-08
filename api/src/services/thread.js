@@ -9,7 +9,6 @@ exports.getFeed = async function (userId) {
 
     const feed = await Thread.find({ postedBy: { $in: following } })
         .populate('postedBy')
-        .populate('repostedBy')
         .populate('replies')
         .sort({
             createdAt: -1,
@@ -50,7 +49,6 @@ exports.getUserThreads = async function (username) {
     })
         .sort({ createdAt: -1 })
         .populate('postedBy')
-        .populate('repostedBy')
         .populate('replies')
         .limit(10)
         .lean();
