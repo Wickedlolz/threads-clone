@@ -57,9 +57,7 @@ export const useThreadActions = (thread: IThread | null) => {
             );
         }
 
-        const isAlreadyRepost = thread?.repostedBy?.find(
-            (u) => u._id === user?._id
-        );
+        const isAlreadyRepost = thread?.repostedBy?.includes(user!._id);
 
         if (isAlreadyRepost) {
             toast.info('You already repost this thread!');
