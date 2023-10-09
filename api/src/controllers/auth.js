@@ -16,7 +16,7 @@ router.post(
         .withMessage('Email is required!')
         .bail()
         .isEmail()
-        .withMessage('Invalid email adress!'),
+        .withMessage('Invalid email address!'),
     body('password')
         .notEmpty()
         .withMessage('Password is required!')
@@ -75,7 +75,7 @@ router.post(
         .withMessage('Email is required!')
         .bail()
         .isEmail()
-        .withMessage('Invalid email adress!'),
+        .withMessage('Invalid email address!'),
     body('password')
         .notEmpty()
         .withMessage('Password is required!')
@@ -170,8 +170,6 @@ router.post('/logout', isAuth(), async (req, res) => {
 
         res.clearCookie(process.env.COOKIE_NAME, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
             maxAge: new Date(Date.now()),
         })
             .status(204)
