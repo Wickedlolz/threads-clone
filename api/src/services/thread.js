@@ -3,7 +3,7 @@ const Reply = require('../models/Reply');
 const User = require('../models/User');
 const { v2: cloudinary } = require('cloudinary');
 
-exports.getFeed = async function (userId) {
+exports.getFeed = async function (userId, limit, startIndex) {
     const user = await User.findById(userId);
     const following = user.following;
 
@@ -13,7 +13,8 @@ exports.getFeed = async function (userId) {
         .sort({
             createdAt: -1,
         })
-        .limit(10)
+        .skip(startIndex)
+        .limit(limit)
         .lean();
 
     const result = feed.map((thread) => {

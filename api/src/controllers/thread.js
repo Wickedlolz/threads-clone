@@ -8,9 +8,11 @@ const { mapErrors } = require('../utils/mapErrors');
 
 router.get('/feed', isAuth(), async (req, res) => {
     const userId = req.user.id;
+    const limit = Number(req.query.limit) || Number.MAX_SAFE_INTEGER;
+    const startIndex = Number(req.query.startIndex) || 0;
 
     try {
-        const feed = await threadService.getFeed(userId);
+        const feed = await threadService.getFeed(userId, limit, startIndex);
 
         res.json(feed);
     } catch (error) {
