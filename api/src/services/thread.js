@@ -38,7 +38,7 @@ exports.getFeed = async function (userId, limit, startIndex) {
     return result;
 };
 
-exports.getUserThreads = async function (username) {
+exports.getUserThreads = async function (username, limit, startIndex) {
     const user = await User.findOne({ username });
 
     if (!user) {
@@ -51,7 +51,8 @@ exports.getUserThreads = async function (username) {
         .sort({ createdAt: -1 })
         .populate('postedBy')
         .populate('replies')
-        .limit(10)
+        .skip(startIndex)
+        .limit(limit)
         .lean();
 
     const result = threads.map((thread) => {

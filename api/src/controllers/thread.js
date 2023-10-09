@@ -23,9 +23,15 @@ router.get('/feed', isAuth(), async (req, res) => {
 
 router.get('/:username', isAuth(), async (req, res) => {
     const { username } = req.params;
+    const limit = Number(req.query.limit) || Number.MAX_SAFE_INTEGER;
+    const startIndex = Number(req.query.startIndex) || 0;
 
     try {
-        const threads = await threadService.getUserThreads(username);
+        const threads = await threadService.getUserThreads(
+            username,
+            limit,
+            startIndex
+        );
         res.json(threads);
     } catch (error) {
         const errors = mapErrors(error);
