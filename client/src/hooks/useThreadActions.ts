@@ -22,9 +22,8 @@ export const useThreadActions = (thread: IThread | null) => {
         }
 
         if (!user) {
-            toast.error(
-                'You must be logged in to like and unlike this thread.'
-            );
+            toast.error('You must be logged in to like or unlike this thread.');
+            return;
         }
 
         setIsLoading(true);
@@ -52,9 +51,8 @@ export const useThreadActions = (thread: IThread | null) => {
         }
 
         if (!user) {
-            toast.error(
-                'You must be logged in to like and unlike this thread.'
-            );
+            toast.error('You must be logged in to like or unlike this thread.');
+            return;
         }
 
         const isAlreadyRepost = thread?.repostedBy?.includes(user!._id);
