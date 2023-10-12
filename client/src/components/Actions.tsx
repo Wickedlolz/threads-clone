@@ -18,7 +18,7 @@ const Actions = ({ thread }: ActionsProps) => {
     const { handleLikeAndUnlike, handleRepostThread } =
         useThreadActions(thread);
     const [openReplyModal, setOpenReplyModal] = useState<boolean>(false);
-    const liked: boolean = thread?.likes.includes(user?._id || '') || false;
+    const liked = thread?.likes.includes(user?._id || '') || false;
 
     return (
         <div>
@@ -41,10 +41,6 @@ const Actions = ({ thread }: ActionsProps) => {
                 <div className="w-0.5 h-0.5 rounded-full bg-gray-500"></div>
                 <p className="text-gray-500 font-sm">
                     {thread?.likes.length} likes
-                </p>
-                <div className="w-0.5 h-0.5 rounded-full bg-gray-500"></div>
-                <p className="text-gray-500 font-sm">
-                    {thread?.repostedBy?.length || 0} reposted
                 </p>
             </div>
 
