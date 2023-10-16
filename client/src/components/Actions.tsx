@@ -22,7 +22,7 @@ const Actions = ({ thread }: ActionsProps) => {
 
     return (
         <div>
-            <div className="flex gap-3 my-2">
+            <div className="flex gap-3 my-2 items-center">
                 <LikeSvg
                     liked={liked}
                     handleLikeAndUnlike={handleLikeAndUnlike}
