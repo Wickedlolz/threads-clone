@@ -132,13 +132,18 @@ exports.createToken = function (user) {
             _id: user._id,
         };
 
-        jwt.sign(payload, process.env.JWT_SECRET, (error, token) => {
-            if (error) {
-                return reject(error);
-            }
+        jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: '2d' },
+            (error, token) => {
+                if (error) {
+                    return reject(error);
+                }
 
-            resolve(token);
-        });
+                resolve(token);
+            }
+        );
     });
 
     return tokenPromise;
