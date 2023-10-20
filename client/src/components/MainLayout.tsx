@@ -2,8 +2,8 @@ import { Outlet } from 'react-router-dom';
 import { useAppSelector } from '../store';
 import { ToastContainer } from 'react-toastify';
 
-import Header from '../components/Header';
-import CreateThread from '../components/CreateThread';
+import Header from './Header';
+import CreateThread from './CreateThread';
 
 const MainLayout = () => {
     const user = useAppSelector((state) => state.auth.user);

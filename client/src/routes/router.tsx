@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 import Home from '../pages/Home';
-import MainLayout from '../layouts/MainLayout';
+import MainLayout from '../components/MainLayout';
 import AuthGuard from '../components/AuthGuard';
 import GuestGuard from '../components/GuestGuard';
 import Spinner from '../components/Spinner';
