@@ -27,7 +27,6 @@ const useFollowUnfollow = (user: IUser) => {
             .unwrap()
             .then(() => {
                 if (following) {
-                    toast.success(`Unfollowing ${user.name}`);
                     const updatedUser = {
                         ...user,
                         followers: [...user.followers].filter(
@@ -35,8 +34,9 @@ const useFollowUnfollow = (user: IUser) => {
                         ),
                     };
                     dispatch(updateUser(updatedUser));
-
                     setFollowing(false);
+
+                    toast.success(`Unfollowing ${user.name}`);
                 } else {
                     const updatedUser = {
                         ...user,
