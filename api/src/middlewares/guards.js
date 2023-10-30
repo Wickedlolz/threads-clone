@@ -27,7 +27,7 @@ exports.isOwner = function () {
         const userId = req.user.id;
         const thread = await threadService.getById(threadId);
 
-        if (thread.postedBy._id === userId) {
+        if (thread.postedBy._id.toString() === userId) {
             next();
         } else {
             res.status(401).json({ message: 'You cannot modify this thread.' });
