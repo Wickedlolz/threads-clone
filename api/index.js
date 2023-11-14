@@ -1,11 +1,11 @@
 /* eslint-disable quotes */
 const { app, server } = require('./src/socket/socket');
 const routes = require('./src/config/routes');
+require('dotenv').config();
 
 init();
 
 async function init() {
-    require('dotenv').config();
     await require('./src/config/mongoose')();
 
     require('./src/config/express')(app);
