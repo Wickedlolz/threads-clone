@@ -11,7 +11,7 @@ const MainLayout = () => {
     return (
         <>
             <Header />
-            <main className="relative max-w-3xl m-auto text-white">
+            <main className="relative max-w-3xl m-auto text-white dark">
                 <Outlet />
                 {user && <CreateThread />}
             </main>
